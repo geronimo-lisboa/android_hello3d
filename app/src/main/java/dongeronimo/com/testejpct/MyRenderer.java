@@ -8,19 +8,14 @@ import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.Light;
 import com.threed.jpct.Object3D;
-import com.threed.jpct.Primitives;
 import com.threed.jpct.RGBColor;
 import com.threed.jpct.SimpleVector;
 import com.threed.jpct.Texture;
-import com.threed.jpct.TextureManager;
 import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
-
-import static com.threed.jpct.util.BitmapHelper.convert;
-import static com.threed.jpct.util.BitmapHelper.rescale;
 
 /**
  * Implementação do renderer. É usado pela HelloWorld (no glView que tem lá)*/
@@ -30,8 +25,10 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     private World world = null;
     private Light sun = null;
     private Texture texture = null;
-    private Object3D obj = null;
+
     private Context context;
+
+    private Terrain terrain;
 
     public MyRenderer(Context ctx){
         context = ctx;
@@ -59,15 +56,11 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             sun = new Light(world);
             sun.setIntensity(250,250,250);
             //cria a textura
-            texture = new Texture(rescale(convert(context.getResources().getDrawable(R.drawable.imagem)), 256,256));
-            TextureManager.getInstance().addTexture("texture", texture);
-            //criação o objeto (um plano)
-            obj = Primitives.getPlane(1, 20f);
-            world.addObject(obj);
-            obj.translate(0, 0, 0);
-            obj.setTexture("texture");
-            obj.build();
-
+            //texture = new Texture(rescale(convert(context.getResources().getDrawable(R.drawable.imagem)), 256,256));
+            //TextureManager.getInstance().addTexture("texture", texture);
+            //criação do terreno
+            Object3D ground = Terrain.Generate(context.getResources().getDrawable(R.drawable.imagem));
+            world.addObject(ground);
             Camera cam = world.getCamera();
             cam.moveCamera(Camera.CAMERA_MOVEOUT, 15);
             cam.lookAt(SimpleVector.ORIGIN);
