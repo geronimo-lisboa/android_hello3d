@@ -6,7 +6,9 @@ import android.util.Log;
 
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
+import com.threed.jpct.GLSLShader;
 import com.threed.jpct.Light;
+import com.threed.jpct.Loader;
 import com.threed.jpct.Object3D;
 import com.threed.jpct.RGBColor;
 import com.threed.jpct.SimpleVector;
@@ -30,6 +32,7 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     private float touchTurn;
     private float touchTurnUp;
     private Terrain terrain;
+    private GLSLShader testeShader;
 
     public void setTouchTurn(float v){
         touchTurn = v;
@@ -67,7 +70,12 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             //texture = new Texture(rescale(convert(context.getResources().getDrawable(R.drawable.imagem)), 256,256));
             //TextureManager.getInstance().addTexture("texture", texture);
             //criação do terreno
-             ground = Terrain.Generate(context.getResources().getDrawable(R.drawable.imagem));
+            ground = Terrain.Generate(context.getResources().getDrawable(R.drawable.imagem));
+
+            String vertexShaderSrc = Loader.loadTextFile(context.getResources().openRawResource(R.raw.teste_vertex_shader));
+            String fragShaderSrc = Loader.loadTextFile(context.getResources().openRawResource(R.raw.teste_fragment_shader));
+            testeShader = new GLSLShader(vertexShaderSrc, fragShaderSrc);
+            ground.setShader(testeShader);
             world.addObject(ground);
             Camera cam = world.getCamera();
             cam.moveCamera(Camera.CAMERA_MOVEOUT, 15);
