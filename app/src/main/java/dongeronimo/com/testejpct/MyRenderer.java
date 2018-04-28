@@ -25,10 +25,18 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     private World world = null;
     private Light sun = null;
     private Texture texture = null;
-
+    private Object3D ground;
     private Context context;
-
+    private float touchTurn;
+    private float touchTurnUp;
     private Terrain terrain;
+
+    public void setTouchTurn(float v){
+        touchTurn = v;
+    }
+    public void setTouchTurnUp(float v){
+        touchTurnUp = v;
+    }
 
     public MyRenderer(Context ctx){
         context = ctx;
@@ -59,7 +67,7 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             //texture = new Texture(rescale(convert(context.getResources().getDrawable(R.drawable.imagem)), 256,256));
             //TextureManager.getInstance().addTexture("texture", texture);
             //criação do terreno
-            Object3D ground = Terrain.Generate(context.getResources().getDrawable(R.drawable.imagem));
+             ground = Terrain.Generate(context.getResources().getDrawable(R.drawable.imagem));
             world.addObject(ground);
             Camera cam = world.getCamera();
             cam.moveCamera(Camera.CAMERA_MOVEOUT, 15);
@@ -81,6 +89,15 @@ public class MyRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl10) {
+        if(touchTurn!=0){
+            ground.rotateX(touchTurn);
+            touchTurn = 0;
+        }
+        if(touchTurnUp!=0){
+            ground.rotateY(touchTurnUp);
+            touchTurnUp = 0;
+        }
+
         // Draw the main screen
         fb.clear(RGBColor.GREEN);
         world.renderScene(fb);
