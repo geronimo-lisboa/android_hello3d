@@ -11,7 +11,9 @@ import android.util.Log;
  * é a magnitude desse vetor*/
 public class GradientCalculator {
     private float data[][];
+    //O valor dos componentes horizontais do gradiente (dIdX)
     private float gX[][];
+    //o valor dos componentes verticais do gradiente(dIdY);
     private float gY[][];
     public GradientCalculator(float data[][]){
         this.data = data;
