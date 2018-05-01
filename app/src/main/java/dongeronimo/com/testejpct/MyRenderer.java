@@ -1,6 +1,8 @@
 package dongeronimo.com.testejpct;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
@@ -9,6 +11,7 @@ import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.GLSLShader;
 import com.threed.jpct.Light;
 import com.threed.jpct.Loader;
+import com.threed.jpct.Logger;
 import com.threed.jpct.Object3D;
 import com.threed.jpct.RGBColor;
 import com.threed.jpct.SimpleVector;
@@ -66,6 +69,26 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             world.setAmbientLight(20,20,20);
             sun = new Light(world);
             sun.setIntensity(250,250,250);
+
+            ///Pega o bitmap do terreno e gera os dados pro heightmap
+            //Isso aqui é necessário para que o android não escale meu bitmap com o tamanho de tela quando
+            //carregá-lo (comportamento padrão), uma vez que eu preciso do bitmap como ele é.
+            BitmapFactory.Options heightmapLoadOption = new BitmapFactory.Options();
+            heightmapLoadOption.inScaled = false;
+            //A carga do bitmap propriamente dita é aqui,
+            Bitmap heightmapBmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.terreno_teste_01, heightmapLoadOption);
+            final int bmpLargura = heightmapBmp.getWidth();
+            final int bmpAltura = heightmapBmp.getHeight();
+            for(int y = 0; y<bmpAltura; y++){
+                for (int x=0; x<bmpLargura; x++){
+                    //Pega o dado de cor e extrai o 1o componente (só preciso de 1, já que o mapa é cinza.
+                    final int colorRawData = heightmapBmp.getPixel(x, y);
+                    final int mask = 0b00000000_00000000_00000000_11111111;
+                    int color = colorRawData & mask;
+                    Logger.log("cor = "+color);
+                }
+            }
+
             //cria a textura
             //texture = new Texture(rescale(convert(context.getResources().getDrawable(R.drawable.imagem)), 256,256));
             //TextureManager.getInstance().addTexture("texture", texture);
@@ -76,7 +99,7 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             String fragShaderSrc = Loader.loadTextFile(context.getResources().openRawResource(R.raw.teste_fragment_shader));
             testeShader = new GLSLShader(vertexShaderSrc, fragShaderSrc);
             ground.setShader(testeShader);
-            world.addObject(ground);
+             world.addObject(ground);
             Camera cam = world.getCamera();
             cam.moveCamera(Camera.CAMERA_MOVEOUT, 15);
             cam.lookAt(SimpleVector.ORIGIN);
