@@ -28,17 +28,20 @@ public class Terrain {
         final int numeroDeFaces = (bmpLargura-1) * (bmpAltura-1);
         final int numeroDeTriangulos = numeroDeFaces * 2;
         superficie = new Object3D(numeroDeTriangulos);
+        //calculo do centro do mundo
+        final float worldOffsetX =  bmpLargura/2 * -1.0f;
+        final float worldOffsetZ =  bmpAltura/2 * -1.0f;
         //percorre o heightmap criando as faces.
         for(int y=0; y<bmpAltura-1; y++){
             for(int x=0; x<bmpLargura-1; x++){
                 //Triangulo 01
-                SimpleVector ponto01 = new SimpleVector(x,heightValues[x][y], y );
-                SimpleVector ponto02 = new SimpleVector(x,heightValues[x][y+1], y+1);
-                SimpleVector ponto03 = new SimpleVector(x+1,heightValues[x+1][y], y );
+                SimpleVector ponto01 = new SimpleVector(x + worldOffsetX,heightValues[x][y], y+worldOffsetZ );
+                SimpleVector ponto02 = new SimpleVector(x+ worldOffsetX,heightValues[x][y+1], y+1+worldOffsetZ);
+                SimpleVector ponto03 = new SimpleVector(x+1+ worldOffsetX,heightValues[x+1][y], y +worldOffsetZ);
                 //Triangulo 02
-                SimpleVector ponto04 = new SimpleVector(x,heightValues[x][y+1], y+1);
-                SimpleVector ponto05 = new SimpleVector(x+1,heightValues[x+1][y+1], y+1 );
-                SimpleVector ponto06 = new SimpleVector(x+1,heightValues[x+1][y], y);
+                SimpleVector ponto04 = new SimpleVector(x+ worldOffsetX,heightValues[x][y+1], y+1+worldOffsetZ);
+                SimpleVector ponto05 = new SimpleVector(x+1+ worldOffsetX,heightValues[x+1][y+1], y+1 +worldOffsetZ);
+                SimpleVector ponto06 = new SimpleVector(x+1+ worldOffsetX,heightValues[x+1][y], y+worldOffsetZ);
                 //Adiciona à superficie
                 superficie.addTriangle(ponto01,0,0, ponto02,0,1, ponto03,1,0);
                 superficie.addTriangle(ponto04,0,1, ponto05,1,1, ponto06,1,0);
