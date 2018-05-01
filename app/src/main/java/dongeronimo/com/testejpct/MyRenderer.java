@@ -11,7 +11,6 @@ import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.GLSLShader;
 import com.threed.jpct.Light;
 import com.threed.jpct.Loader;
-import com.threed.jpct.Logger;
 import com.threed.jpct.Object3D;
 import com.threed.jpct.RGBColor;
 import com.threed.jpct.SimpleVector;
@@ -30,7 +29,8 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     private World world = null;
     private Light sun = null;
     private Texture texture = null;
-    private Object3D ground;
+    private Object3D superficie = null;
+    //private Object3D ground;
     private Context context;
     private float touchTurn;
     private float touchTurnUp;
@@ -76,30 +76,55 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             BitmapFactory.Options heightmapLoadOption = new BitmapFactory.Options();
             heightmapLoadOption.inScaled = false;
             //A carga do bitmap propriamente dita é aqui,
-            Bitmap heightmapBmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.terreno_teste_01, heightmapLoadOption);
+            Bitmap heightmapBmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.hm02, heightmapLoadOption);
             final int bmpLargura = heightmapBmp.getWidth();
             final int bmpAltura = heightmapBmp.getHeight();
+            float heightValues[][] = new float[bmpAltura][bmpAltura];
             for(int y = 0; y<bmpAltura; y++){
                 for (int x=0; x<bmpLargura; x++){
                     //Pega o dado de cor e extrai o 1o componente (só preciso de 1, já que o mapa é cinza.
                     final int colorRawData = heightmapBmp.getPixel(x, y);
                     final int mask = 0b00000000_00000000_00000000_11111111;
                     int color = colorRawData & mask;
-                    Logger.log("cor = "+color);
+                    //O nivel do mar é hardcoded no momento pra 10 e um fator de escala p 0.5
+                    heightValues[x][y] = (color - 10.0f) * 0.1f;
                 }
             }
+            //Ao final disso eu tenho um array de floats com o heightmap, posso já começar a usar pra montar a superficie
+            final int numeroDeFaces = (bmpLargura-1) * (bmpAltura-1);
+            final int numeroDeTriangulos = numeroDeFaces * 2;
+            superficie = new Object3D(numeroDeTriangulos);
 
+            //percorre o heightmap criando as faces.
+            for(int y=0; y<bmpAltura-1; y++){
+                for(int x=0; x<bmpLargura-1; x++){
+                    //Triangulo 01
+                    SimpleVector ponto01 = new SimpleVector(x, y, heightValues[x][y]);
+                    SimpleVector ponto02 = new SimpleVector(x, y+1, heightValues[x][y+1]);
+                    SimpleVector ponto03 = new SimpleVector(x+1, y, heightValues[x+1][y]);
+                    //Triangulo 02
+                    SimpleVector ponto04 = new SimpleVector(x, y+1, heightValues[x][y+1]);
+                    SimpleVector ponto05 = new SimpleVector(x+1, y+1, heightValues[x+1][y+1]);
+                    SimpleVector ponto06 = new SimpleVector(x+1, y, heightValues[x+1][y]);
+                    //Adiciona à superficie
+                    superficie.addTriangle(ponto01,0,0, ponto02,0,1, ponto03,1,0);
+                    superficie.addTriangle(ponto04,0,1, ponto05,1,1, ponto06,1,0);
+                }
+            }
+            superficie.build();
+            superficie.strip();
+            superficie.build();
             //cria a textura
             //texture = new Texture(rescale(convert(context.getResources().getDrawable(R.drawable.imagem)), 256,256));
             //TextureManager.getInstance().addTexture("texture", texture);
             //criação do terreno
-            ground = Terrain.Generate(context.getResources().getDrawable(R.drawable.imagem));
+            //ground = Terrain.Generate(context.getResources().getDrawable(R.drawable.imagem));
 
             String vertexShaderSrc = Loader.loadTextFile(context.getResources().openRawResource(R.raw.teste_vertex_shader));
             String fragShaderSrc = Loader.loadTextFile(context.getResources().openRawResource(R.raw.teste_fragment_shader));
             testeShader = new GLSLShader(vertexShaderSrc, fragShaderSrc);
-            ground.setShader(testeShader);
-             world.addObject(ground);
+            superficie.setShader(testeShader);
+            world.addObject(superficie);
             Camera cam = world.getCamera();
             cam.moveCamera(Camera.CAMERA_MOVEOUT, 15);
             cam.lookAt(SimpleVector.ORIGIN);
@@ -107,7 +132,7 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             SimpleVector sv = new SimpleVector();
             sv.set(SimpleVector.ORIGIN);
             sv.y -= 100;
-            sv.z -= 100;
+            sv.z -= 800;
             sun.setPosition(sv);
             MemoryHelper.compact();
         }
@@ -121,11 +146,11 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl10) {
         if(touchTurn!=0){
-            ground.rotateX(touchTurn);
+            superficie.rotateX(touchTurn);
             touchTurn = 0;
         }
         if(touchTurnUp!=0){
-            ground.rotateY(touchTurnUp);
+            superficie.rotateY(touchTurnUp);
             touchTurnUp = 0;
         }
 
