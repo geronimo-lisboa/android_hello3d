@@ -18,23 +18,23 @@ public class GradientCalculator {
         gX = new float[data.length][data[0].length];
         gY = new float[data.length][data[0].length];
         //cálculo do gradiente horizontal
-        for(int y=0; y<data.length; y++){
-            for(int x=0; x<data[y].length; x++){
-                float f0 = x==0?data[x][y]:data[x-1][y];//isso aqui é pra lidar com a borda esquerda
-                float f1 = data[x][y];
-                float f2 = x==(data[y].length-1)? data[x][data[y].length-1]: data[x+1][y];//isso aqui é pra lidar com a borda direita
+        for(int ln=0; ln<data.length; ln++){
+            for(int col = 0; col < data[ln].length; col++){
+                float f0 = col==0 ? data[ln][col] : data[ln][col-1];//isso aqui é pra lidar com a borda esquerda
+                float f1 = data[ln][col];
+                float f2 = col ==(data[ln].length-1)? data[ln][col]: data[ln][col+1];//isso aqui é pra lidar com a borda direita
                 float dIdX = f0 * -1.0f + f1 * 0.0f + f2 * 1.0f;
-                gX[x][y] = dIdX;
+                gX[ln][col] = dIdX;
             }
         }
         //cálculo do gradiente vertical
-        for(int y=0; y<data.length; y++){
-            for(int x=0; x<data[y].length; x++){
-                float f0 = y==0?data[x][y]: data[x][y-1];
-                float f1 = data[x][y];
-                float f2 = y==(data.length-1)?data[x][y]:data[x][y+1];
+        for(int ln=0; ln<data.length; ln++){
+            for(int col = 0; col < data[ln].length; col++){
+                float f0 = ln==0 ? data[ln][col] : data[ln-1][col];
+                float f1 = data[ln][col];
+                float f2 = ln == (data.length-1) ? data[ln][col]: data[ln+1][col];//isso aqui é pra lidar com a borda direita
                 float dIdY = f0 * -1.0f + f1 * 0.0f + f2 * 1.0f;
-                gY[x][y] = dIdY;
+                gY[ln][col] = dIdY;
             }
         }
         Log.d("aa","calc grad");

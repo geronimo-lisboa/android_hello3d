@@ -71,14 +71,14 @@ public class Terrain {
         final int bmpLargura = heightmapBmp.getWidth();
         final int bmpAltura = heightmapBmp.getHeight();
         heightValues = new float[bmpAltura][bmpAltura];
-        for(int y = 0; y<bmpAltura; y++){
-            for (int x=0; x<bmpLargura; x++){
+        for(int ln = 0; ln <bmpAltura; ln++){
+            for (int col=0; col<bmpLargura; col++){
                 //Pega o dado de cor e extrai o 1o componente (só preciso de 1, já que o mapa é cinza.
-                final int colorRawData = heightmapBmp.getPixel(x, y);
+                final int colorRawData = heightmapBmp.getPixel(col, ln);
                 final int mask = 0b00000000_00000000_00000000_11111111;
                 int color = colorRawData & mask;
                 //O nivel do mar é hardcoded no momento pra 10 e um fator de escala p 0.5
-                heightValues[x][y] = (color*1.0f) * 0.025f;
+                heightValues[ln][col] = (color*1.0f) * 0.025f;
             }
         }
         //Ao final disso eu tenho um array de floats com o heightmap, posso já começar a usar pra montar a superficie
