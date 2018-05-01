@@ -87,7 +87,7 @@ public class MyRenderer implements GLSurfaceView.Renderer {
                     final int mask = 0b00000000_00000000_00000000_11111111;
                     int color = colorRawData & mask;
                     //O nivel do mar é hardcoded no momento pra 10 e um fator de escala p 0.5
-                    heightValues[x][y] = (color - 10.0f) * 0.1f;
+                    heightValues[x][y] = (color*1.0f) * 0.025f;
                 }
             }
             //Ao final disso eu tenho um array de floats com o heightmap, posso já começar a usar pra montar a superficie
@@ -99,39 +99,38 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             for(int y=0; y<bmpAltura-1; y++){
                 for(int x=0; x<bmpLargura-1; x++){
                     //Triangulo 01
-                    SimpleVector ponto01 = new SimpleVector(x, y, heightValues[x][y]);
-                    SimpleVector ponto02 = new SimpleVector(x, y+1, heightValues[x][y+1]);
-                    SimpleVector ponto03 = new SimpleVector(x+1, y, heightValues[x+1][y]);
+                    SimpleVector ponto01 = new SimpleVector(x,heightValues[x][y], y );
+                    SimpleVector ponto02 = new SimpleVector(x,heightValues[x][y+1], y+1);
+                    SimpleVector ponto03 = new SimpleVector(x+1,heightValues[x+1][y], y );
                     //Triangulo 02
-                    SimpleVector ponto04 = new SimpleVector(x, y+1, heightValues[x][y+1]);
-                    SimpleVector ponto05 = new SimpleVector(x+1, y+1, heightValues[x+1][y+1]);
-                    SimpleVector ponto06 = new SimpleVector(x+1, y, heightValues[x+1][y]);
+                    SimpleVector ponto04 = new SimpleVector(x,heightValues[x][y+1], y+1);
+                    SimpleVector ponto05 = new SimpleVector(x+1,heightValues[x+1][y+1], y+1 );
+                    SimpleVector ponto06 = new SimpleVector(x+1,heightValues[x+1][y], y);
                     //Adiciona à superficie
                     superficie.addTriangle(ponto01,0,0, ponto02,0,1, ponto03,1,0);
                     superficie.addTriangle(ponto04,0,1, ponto05,1,1, ponto06,1,0);
                 }
             }
+            superficie.setCulling(false);
+            superficie.calcBoundingBox();
+            superficie.calcCenter();
             superficie.build();
             superficie.strip();
             superficie.build();
-            //cria a textura
-            //texture = new Texture(rescale(convert(context.getResources().getDrawable(R.drawable.imagem)), 256,256));
-            //TextureManager.getInstance().addTexture("texture", texture);
-            //criação do terreno
-            //ground = Terrain.Generate(context.getResources().getDrawable(R.drawable.imagem));
-
+            //Setagem do shader na superficie.
             String vertexShaderSrc = Loader.loadTextFile(context.getResources().openRawResource(R.raw.teste_vertex_shader));
             String fragShaderSrc = Loader.loadTextFile(context.getResources().openRawResource(R.raw.teste_fragment_shader));
             testeShader = new GLSLShader(vertexShaderSrc, fragShaderSrc);
             superficie.setShader(testeShader);
             world.addObject(superficie);
+            //Cria a câmera
             Camera cam = world.getCamera();
-            cam.moveCamera(Camera.CAMERA_MOVEOUT, 15);
-            cam.lookAt(SimpleVector.ORIGIN);
-
+            cam.setPosition(0, 20, -20);
+            cam.lookAt(superficie.getCenter());
+            //Seta a posição do sol
             SimpleVector sv = new SimpleVector();
             sv.set(SimpleVector.ORIGIN);
-            sv.y -= 100;
+            sv.y += 500;
             sv.z -= 800;
             sun.setPosition(sv);
             MemoryHelper.compact();
