@@ -8,13 +8,9 @@ import android.util.Log;
 
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
-import com.threed.jpct.GLSLShader;
 import com.threed.jpct.Light;
-import com.threed.jpct.Loader;
-import com.threed.jpct.Object3D;
 import com.threed.jpct.RGBColor;
 import com.threed.jpct.SimpleVector;
-import com.threed.jpct.Texture;
 import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
 
@@ -28,14 +24,13 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     private FrameBuffer fb = null;
     private World world = null;
     private Light sun = null;
-    private Texture texture = null;
-    private Object3D superficie = null;
-    //private Object3D ground;
+
+
     private Context context;
     private float touchTurn;
     private float touchTurnUp;
     private Terrain terrain;
-    private GLSLShader testeShader;
+
 
     public void setTouchTurn(float v){
         touchTurn = v;
@@ -77,56 +72,14 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             heightmapLoadOption.inScaled = false;
             //A carga do bitmap propriamente dita é aqui,
             Bitmap heightmapBmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.hm02, heightmapLoadOption);
-            final int bmpLargura = heightmapBmp.getWidth();
-            final int bmpAltura = heightmapBmp.getHeight();
-            float heightValues[][] = new float[bmpAltura][bmpAltura];
-            for(int y = 0; y<bmpAltura; y++){
-                for (int x=0; x<bmpLargura; x++){
-                    //Pega o dado de cor e extrai o 1o componente (só preciso de 1, já que o mapa é cinza.
-                    final int colorRawData = heightmapBmp.getPixel(x, y);
-                    final int mask = 0b00000000_00000000_00000000_11111111;
-                    int color = colorRawData & mask;
-                    //O nivel do mar é hardcoded no momento pra 10 e um fator de escala p 0.5
-                    heightValues[x][y] = (color*1.0f) * 0.025f;
-                }
-            }
-            //Ao final disso eu tenho um array de floats com o heightmap, posso já começar a usar pra montar a superficie
-            final int numeroDeFaces = (bmpLargura-1) * (bmpAltura-1);
-            final int numeroDeTriangulos = numeroDeFaces * 2;
-            superficie = new Object3D(numeroDeTriangulos);
-
-            //percorre o heightmap criando as faces.
-            for(int y=0; y<bmpAltura-1; y++){
-                for(int x=0; x<bmpLargura-1; x++){
-                    //Triangulo 01
-                    SimpleVector ponto01 = new SimpleVector(x,heightValues[x][y], y );
-                    SimpleVector ponto02 = new SimpleVector(x,heightValues[x][y+1], y+1);
-                    SimpleVector ponto03 = new SimpleVector(x+1,heightValues[x+1][y], y );
-                    //Triangulo 02
-                    SimpleVector ponto04 = new SimpleVector(x,heightValues[x][y+1], y+1);
-                    SimpleVector ponto05 = new SimpleVector(x+1,heightValues[x+1][y+1], y+1 );
-                    SimpleVector ponto06 = new SimpleVector(x+1,heightValues[x+1][y], y);
-                    //Adiciona à superficie
-                    superficie.addTriangle(ponto01,0,0, ponto02,0,1, ponto03,1,0);
-                    superficie.addTriangle(ponto04,0,1, ponto05,1,1, ponto06,1,0);
-                }
-            }
-            superficie.setCulling(false);
-            superficie.calcBoundingBox();
-            superficie.calcCenter();
-            superficie.build();
-            superficie.strip();
-            superficie.build();
-            //Setagem do shader na superficie.
-            String vertexShaderSrc = Loader.loadTextFile(context.getResources().openRawResource(R.raw.teste_vertex_shader));
-            String fragShaderSrc = Loader.loadTextFile(context.getResources().openRawResource(R.raw.teste_fragment_shader));
-            testeShader = new GLSLShader(vertexShaderSrc, fragShaderSrc);
-            superficie.setShader(testeShader);
-            world.addObject(superficie);
+            //Criação do terreno
+            terrain = new Terrain(heightmapBmp, context);
+            world.addObject(terrain.getSurface());
             //Cria a câmera
             Camera cam = world.getCamera();
             cam.setPosition(0, 20, -20);
-            cam.lookAt(superficie.getCenter());
+            SimpleVector zero = new SimpleVector(0,0,0);
+            cam.lookAt(zero);  //superficie.getCenter());
             //Seta a posição do sol
             SimpleVector sv = new SimpleVector();
             sv.set(SimpleVector.ORIGIN);
@@ -145,11 +98,11 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl10) {
         if(touchTurn!=0){
-            superficie.rotateX(touchTurn);
+            terrain.getSurface().rotateX(touchTurn);
             touchTurn = 0;
         }
         if(touchTurnUp!=0){
-            superficie.rotateY(touchTurnUp);
+            terrain.getSurface().rotateY(touchTurnUp);
             touchTurnUp = 0;
         }
 
