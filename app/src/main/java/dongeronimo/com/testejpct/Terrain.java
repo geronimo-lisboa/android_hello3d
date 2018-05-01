@@ -20,6 +20,7 @@ public class Terrain {
     private float heightValues[][];
     private Object3D superficie;
     private GLSLShader shader;
+    private GradientCalculator gradientCalculator;
 
     private void buildTerrain(){
         //Construção da geometria
@@ -81,6 +82,7 @@ public class Terrain {
             }
         }
         //Ao final disso eu tenho um array de floats com o heightmap, posso já começar a usar pra montar a superficie
+        gradientCalculator = new GradientCalculator(heightValues);
     }
 
     public Object3D getSurface(){
