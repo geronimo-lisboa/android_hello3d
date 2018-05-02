@@ -25,7 +25,7 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     private World world = null;
     private Light sun = null;
 
-
+    private Camera cam;
     private Context context;
     private float touchTurn;
     private float touchTurnUp;
@@ -71,12 +71,12 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             BitmapFactory.Options heightmapLoadOption = new BitmapFactory.Options();
             heightmapLoadOption.inScaled = false;
             //A carga do bitmap propriamente dita é aqui,
-            Bitmap heightmapBmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.teste_gradient, heightmapLoadOption);
+            Bitmap heightmapBmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.hm02, heightmapLoadOption);
             //Criação do terreno
             terrain = new Terrain(heightmapBmp, context);
             world.addObject(terrain.getSurface());
             //Cria a câmera
-            Camera cam = world.getCamera();
+            cam  = world.getCamera();
             cam.setPosition(0, 20, -20);
             SimpleVector zero = new SimpleVector(0,0,0);
             cam.lookAt(zero);  //superficie.getCenter());
@@ -112,5 +112,25 @@ public class MyRenderer implements GLSurfaceView.Renderer {
         world.draw(fb);
         fb.display();
 
+    }
+
+    public void incrementCameraZ() {
+        SimpleVector incVec = new SimpleVector(0,0,1.0);
+        cam.moveCamera(incVec, 1);
+    }
+
+    public void decrementCameraZ() {
+        SimpleVector incVec = new SimpleVector(0,0,-1.0);
+        cam.moveCamera(incVec, 1);
+    }
+
+    public void decrementCameraX() {
+        SimpleVector incVec = new SimpleVector(-1,0,0);
+        cam.moveCamera(incVec, 1);
+    }
+
+    public void incrementCameraX() {
+        SimpleVector incVec = new SimpleVector(1,0,0.0);
+        cam.moveCamera(incVec, 1);
     }
 }
