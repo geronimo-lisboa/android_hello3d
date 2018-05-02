@@ -97,13 +97,18 @@ public class MyRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl10) {
-        if(touchTurn!=0){
-            terrain.getSurface().rotateX(touchTurn);
+        //antigamente rodava o terreno, agora vai rodar a câmera, o rotaciona ao redor do eixo y,
+        //o y ao redor do eixo x;
+        if(touchTurn!=0){//rotação ao redor do y
+            //A rotação está sendo na posição da câmera e não ao redor do foco dela como eu queria que fosse.
+            SimpleVector yV = new SimpleVector(0,1,0);
+            cam.rotateAxis(yV, touchTurn);
             touchTurn = 0;
         }
         if(touchTurnUp!=0){
-            terrain.getSurface().rotateY(touchTurnUp);
-            touchTurnUp = 0;
+//            SimpleVector xV = n
+//            terrain.getSurface().rotateY(touchTurnUp);
+//            touchTurnUp = 0;
         }
 
         // Draw the main screen

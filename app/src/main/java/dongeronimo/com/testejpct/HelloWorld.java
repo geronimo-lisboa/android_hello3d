@@ -101,10 +101,40 @@ public class HelloWorld extends Activity implements ScaleGestureDetector.OnScale
         return eventHasBeenProcessed;
     }
 
+    private boolean rotateCamera(MotionEvent me){
+        gestureDec.onTouchEvent(me);
+        if (me.getAction() == MotionEvent.ACTION_DOWN) {
+            xpos = me.getX();
+            ypos = me.getY();
+            return true;
+        }
+        if (me.getAction() == MotionEvent.ACTION_UP) {
+            xpos = -1;
+            ypos = -1;
+            touchTurn = 0;
+            touchTurnUp = 0;
+            return true;
+        }
+        if (me.getAction() == MotionEvent.ACTION_MOVE) {
+            float xd = me.getX() - xpos;
+            float yd = me.getY() - ypos;
+            xpos = me.getX();
+            ypos = me.getY();
+            touchTurn = xd / -100f;
+            touchTurnUp = yd / -100f;
+            renderer.setTouchTurn(touchTurn);
+            renderer.setTouchTurnUp(touchTurnUp);
+            return true;
+        }
+        return false;
+    }
     @Override
     public boolean onTouchEvent(MotionEvent me){
         //Testa se é pra voar no mundo
         if(flyOnWorldEvent(me)){
+            return true;
+        }
+        if(rotateCamera(me)){
             return true;
         }
         //Testa se é pra rotacionar a câmera no mundo
