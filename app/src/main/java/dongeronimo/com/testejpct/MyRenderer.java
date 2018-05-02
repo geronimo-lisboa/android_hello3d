@@ -30,13 +30,18 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     private float touchTurn;
     private float touchTurnUp;
     private Terrain terrain;
-
+    private SimpleVector cameraFocus;
+    private SimpleVector cameraPosition;
+    private float cameraAzimuth = 0;
+    private float cameraElevation = 0;
 
     public void setTouchTurn(float v){
         touchTurn = v;
+        Log.d("TOUCH_TURN", ""+v);
     }
     public void setTouchTurnUp(float v){
         touchTurnUp = v;
+        Log.d("TOUCH_TURN_UP", ""+v);
     }
 
     public MyRenderer(Context ctx){
@@ -77,9 +82,11 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             world.addObject(terrain.getSurface());
             //Cria a câmera
             cam  = world.getCamera();
-            cam.setPosition(0, 20, -20);
-            SimpleVector zero = new SimpleVector(0,0,0);
-            cam.lookAt(zero);  //superficie.getCenter());
+
+            cameraPosition = new SimpleVector(0,20,-20);
+            cameraFocus = new SimpleVector(0,0,0);
+            cam.setPosition(cameraPosition);
+            cam.lookAt(cameraFocus);  //superficie.getCenter());
             //Seta a posição do sol
             SimpleVector sv = new SimpleVector();
             sv.set(SimpleVector.ORIGIN);
@@ -99,17 +106,22 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl10) {
         //antigamente rodava o terreno, agora vai rodar a câmera, o rotaciona ao redor do eixo y,
         //o y ao redor do eixo x;
-        if(touchTurn!=0){//rotação ao redor do y
-            //A rotação está sendo na posição da câmera e não ao redor do foco dela como eu queria que fosse.
-            SimpleVector yV = new SimpleVector(0,1,0);
-            cam.rotateAxis(yV, touchTurn);
-            touchTurn = 0;
-        }
-        if(touchTurnUp!=0){
+//        if(touchTurn!=0){//rotação ao redor do y
+//            //A rotação está sendo na posição da câmera e não ao redor do foco dela como eu queria que fosse.
+//            SimpleVector yV = new SimpleVector(0,1,0);
+//            cam.rotateAxis(yV, touchTurn);
+//            touchTurn = 0;
+//        }
+//        if(touchTurnUp!=0){
 //            SimpleVector xV = n
 //            terrain.getSurface().rotateY(touchTurnUp);
 //            touchTurnUp = 0;
-        }
+//        }
+        //Atualiza a câmera
+        cam  = world.getCamera();
+        cam.setPosition(cameraPosition);
+        cam.lookAt(cameraFocus);  //superficie.getCenter());
+
 
         // Draw the main screen
         fb.clear(RGBColor.GREEN);
@@ -120,22 +132,21 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     }
 
     public void incrementCameraZ() {
-        SimpleVector incVec = new SimpleVector(0,0,1.0);
-        cam.moveCamera(incVec, 1);
+        cameraPosition = cameraPosition.calcAdd(new SimpleVector(0,0,1));
+        cameraFocus = cameraFocus.calcAdd(new SimpleVector(0,0,1));
     }
 
     public void decrementCameraZ() {
-        SimpleVector incVec = new SimpleVector(0,0,-1.0);
-        cam.moveCamera(incVec, 1);
+        cameraPosition = cameraPosition.calcAdd(new SimpleVector(0, 0, -1));
+        cameraFocus = cameraFocus.calcAdd(new SimpleVector(0, 0, -1));
     }
-
     public void decrementCameraX() {
-        SimpleVector incVec = new SimpleVector(-1,0,0);
-        cam.moveCamera(incVec, 1);
+        cameraPosition = cameraPosition.calcAdd(new SimpleVector(-1, 0, 0));
+        cameraFocus = cameraFocus.calcAdd(new SimpleVector(-1, 0, 0));
     }
 
     public void incrementCameraX() {
-        SimpleVector incVec = new SimpleVector(1,0,0.0);
-        cam.moveCamera(incVec, 1);
+        cameraPosition = cameraPosition.calcAdd(new SimpleVector(1, 0, 0));
+        cameraFocus = cameraFocus.calcAdd(new SimpleVector(1, 0, 0));
     }
 }
