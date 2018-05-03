@@ -27,25 +27,24 @@ public class MyRenderer implements GLSurfaceView.Renderer {
 
     private Camera cam;
     private Context context;
-    private float touchTurn;
+
     private float touchTurnUp;
     private Terrain terrain;
     private SimpleVector cameraFocus;
     private SimpleVector cameraPosition;
-    private float cameraAzimuth = 0;
-    private float cameraElevation = 0;
+
+    private float touchTurn = 0;
 
     public void setTouchTurn(float v){
-        touchTurn = v;
-        Log.d("TOUCH_TURN", ""+v);
+        touchTurn += v;
     }
     public void setTouchTurnUp(float v){
-        touchTurnUp = v;
-        Log.d("TOUCH_TURN_UP", ""+v);
+        touchTurnUp += v;
+
     }
 
     public MyRenderer(Context ctx){
-        context = ctx;
+        this.context = ctx;
     }
 
     @Override
@@ -82,11 +81,14 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             world.addObject(terrain.getSurface());
             //Cria a câmera
             cam  = world.getCamera();
-
-            cameraPosition = new SimpleVector(0,20,-20);
+            cameraPosition = new SimpleVector(20,20,-20);
             cameraFocus = new SimpleVector(0,0,0);
             cam.setPosition(cameraPosition);
-            cam.lookAt(cameraFocus);  //superficie.getCenter());
+            cam.lookAt(cameraFocus);
+            //Agora o cálculo do azimute e elevação iniciais
+            SimpleVector vecFromOrigin = cameraPosition.calcSub(cameraFocus);//O vetor olho-foco, no sist. de coordenadas da origem
+            final float r = (float) Math.sqrt(vecFromOrigin.x * vecFromOrigin.x + vecFromOrigin.y*vecFromOrigin.y + vecFromOrigin.z*vecFromOrigin.z );
+
             //Seta a posição do sol
             SimpleVector sv = new SimpleVector();
             sv.set(SimpleVector.ORIGIN);
@@ -104,24 +106,28 @@ public class MyRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl10) {
-        //antigamente rodava o terreno, agora vai rodar a câmera, o rotaciona ao redor do eixo y,
-        //o y ao redor do eixo x;
-//        if(touchTurn!=0){//rotação ao redor do y
-//            //A rotação está sendo na posição da câmera e não ao redor do foco dela como eu queria que fosse.
-//            SimpleVector yV = new SimpleVector(0,1,0);
-//            cam.rotateAxis(yV, touchTurn);
-//            touchTurn = 0;
-//        }
-//        if(touchTurnUp!=0){
-//            SimpleVector xV = n
-//            terrain.getSurface().rotateY(touchTurnUp);
-//            touchTurnUp = 0;
-//        }
         //Atualiza a câmera
+        //Posiciona
         cam  = world.getCamera();
         cam.setPosition(cameraPosition);
         cam.lookAt(cameraFocus);  //superficie.getCenter());
-
+        //Rotaciona ao redor do eixo
+        if(touchTurn!=0){
+            SimpleVector vecFromOrigin = cameraPosition.calcSub(cameraFocus);//O vetor olho-foco, no sist. de coordenadas da origem
+            final float len = vecFromOrigin.length();
+            cam.moveCamera(Camera.CAMERA_MOVEIN, len);
+            cam.rotateAxis(new SimpleVector(0,1,0), touchTurn);
+            cam.moveCamera(Camera.CAMERA_MOVEOUT, len);
+            Log.d("ANGULO_touchturn", ""+Math.toDegrees(touchTurn));
+        }
+        if(touchTurnUp!=0){
+            SimpleVector vecFromOrigin = cameraPosition.calcSub(cameraFocus);//O vetor olho-foco, no sist. de coordenadas da origem
+            final float len = vecFromOrigin.length();
+            cam.moveCamera(Camera.CAMERA_MOVEIN, len);
+            cam.rotateAxis(new SimpleVector(1,0,0), touchTurnUp);
+            cam.moveCamera(Camera.CAMERA_MOVEOUT, len);
+            Log.d("ANGULO_touchturnup", ""+Math.toDegrees(touchTurnUp));
+        }
 
         // Draw the main screen
         fb.clear(RGBColor.GREEN);
