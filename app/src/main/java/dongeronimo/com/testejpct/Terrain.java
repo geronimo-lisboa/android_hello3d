@@ -58,11 +58,9 @@ public class Terrain {
         superficie.setCulling(false);
         superficie.calcBoundingBox();
         superficie.calcCenter();
-        superficie.build();
         superficie.strip();
-        superficie.build();
         t1 = System.currentTimeMillis();
-        Log.d("TEMPO_BUILD_DA_API", (t1-t0)+" ms");
+        Log.d("TEMPO_BUILD_DA_API", (t1-t0)+" ms");//
         tt = tt + (t1-t0);
         Log.d("TEMPO_TOTAL",(t1-t0)+" ms");
         //Construção do shader
