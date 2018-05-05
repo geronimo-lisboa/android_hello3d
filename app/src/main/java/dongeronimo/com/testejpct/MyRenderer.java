@@ -81,10 +81,12 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             world.addObject(terrain.getSurface());
             //Cria a câmera
             cam  = world.getCamera();
-            cameraPosition = new SimpleVector(20,20,-20);
+            cameraPosition = new SimpleVector(0,20,-20);
             cameraFocus = new SimpleVector(0,0,0);
             cam.setPosition(cameraPosition);
             cam.lookAt(cameraFocus);
+            SimpleVector camDirection = cam.getDirection();
+
             //Agora o cálculo do azimute e elevação iniciais
             SimpleVector vecFromOrigin = cameraPosition.calcSub(cameraFocus);//O vetor olho-foco, no sist. de coordenadas da origem
             final float r = (float) Math.sqrt(vecFromOrigin.x * vecFromOrigin.x + vecFromOrigin.y*vecFromOrigin.y + vecFromOrigin.z*vecFromOrigin.z );
@@ -128,7 +130,8 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             cam.moveCamera(Camera.CAMERA_MOVEOUT, len);
             Log.d("ANGULO_touchturnup", ""+Math.toDegrees(touchTurnUp));
         }
-
+        //tenta flipar o y
+        cam.rotateCameraZ((float)Math.toRadians(180));
         // Draw the main screen
         fb.clear(RGBColor.GREEN);
         world.renderScene(fb);
