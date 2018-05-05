@@ -105,7 +105,7 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
 
     }
-
+    float xR = 0;
     @Override
     public void onDrawFrame(GL10 gl10) {
         //Atualiza a câmera
@@ -130,7 +130,7 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             cam.moveCamera(Camera.CAMERA_MOVEOUT, len);
             Log.d("ANGULO_touchturnup", ""+Math.toDegrees(touchTurnUp));
         }
-        //tenta flipar o y
+        //Flipa a câmera pra corrigir o y
         cam.rotateCameraZ((float)Math.toRadians(180));
         // Draw the main screen
         fb.clear(RGBColor.GREEN);
