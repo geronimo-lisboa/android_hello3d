@@ -115,19 +115,27 @@ public class MyRenderer implements GLSurfaceView.Renderer {
         cam.lookAt(cameraFocus);  //superficie.getCenter());
         //Rotaciona ao redor do eixo
         if(touchTurn!=0){
-            SimpleVector vecFromOrigin = cameraPosition.calcSub(cameraFocus);//O vetor olho-foco, no sist. de coordenadas da origem
-            final float len = vecFromOrigin.length();
-            cam.moveCamera(Camera.CAMERA_MOVEIN, len);
-            cam.rotateAxis(new SimpleVector(0,1,0), touchTurn);
-            cam.moveCamera(Camera.CAMERA_MOVEOUT, len);
-            Log.d("ANGULO_touchturn", ""+Math.toDegrees(touchTurn));
+            //SimpleVector vecFromOrigin = cameraPosition.calcSub(cameraFocus);//O vetor olho-foco, no sist. de coordenadas da origem
+            //final float len = vecFromOrigin.length();
+            //cam.moveCamera(Camera.CAMERA_MOVEIN, len);
+            //cam.rotateAxis(new SimpleVector(0,1,0), touchTurn);
+            //cam.moveCamera(Camera.CAMERA_MOVEOUT, len);
+            //Log.d("ANGULO_touchturn", ""+Math.toDegrees(touchTurn));
         }
         if(touchTurnUp!=0){
+            double angAsDeg =Math.toDegrees(touchTurnUp);
+            if(angAsDeg <= -45)
+                angAsDeg = -45;
+            if(angAsDeg >= 45)
+                angAsDeg = 45;
+            final float angAsRad = (float)Math.toRadians(angAsDeg);
+            touchTurnUp = angAsRad;
             SimpleVector vecFromOrigin = cameraPosition.calcSub(cameraFocus);//O vetor olho-foco, no sist. de coordenadas da origem
             final float len = vecFromOrigin.length();
             cam.moveCamera(Camera.CAMERA_MOVEIN, len);
-            cam.rotateAxis(new SimpleVector(1,0,0), touchTurnUp);
+            cam.rotateAxis(new SimpleVector(1,0,0), angAsRad);
             cam.moveCamera(Camera.CAMERA_MOVEOUT, len);
+
             Log.d("ANGULO_touchturnup", ""+Math.toDegrees(touchTurnUp));
         }
         //Flipa a câmera pra corrigir o y
