@@ -31,7 +31,7 @@ public class Terrain {
         final int bmpAltura = heightmapBitmap.getHeight();
         final int numeroDeFaces = (bmpLargura-1) * (bmpAltura-1);
         final int numeroDeTriangulos = numeroDeFaces * 2;
-        superficie = new Object3D(numeroDeTriangulos);
+        //superficie = new Object3D(numeroDeTriangulos);
         //calculo do centro do mundo
         final float worldOffsetX =  bmpLargura/2 * -1.0f;
         final float worldOffsetZ =  bmpAltura/2 * -1.0f;
@@ -123,13 +123,14 @@ public class Terrain {
                 currentIndex = currentIndex+1;
             }
         }
-
         //passa as listas pro objeto
+        superficie = new Object3D(coords, uvs, indexes, 0);
         superficie.setCulling(false);
         superficie.calcBoundingBox();
         superficie.calcCenter();
-        superficie.compile(false, true);
         superficie.strip();
+        superficie.compile(false, true);
+        superficie.build();
 
         //Construção do shader
         //Setagem do shader na superficie.
@@ -138,7 +139,7 @@ public class Terrain {
         shader = new GLSLShader(vertexShaderSrc, fragShaderSrc);
         superficie.setShader(shader);
         //tá pronto
-        superficie.build();
+
         alredyBuilt = true;
         final long t = System.currentTimeMillis();
         Log.d("TEMPO_GASTO", ""+(t - t0));
