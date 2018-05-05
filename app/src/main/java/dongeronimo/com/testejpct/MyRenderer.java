@@ -135,10 +135,11 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             SimpleVector vecFromOrigin = cameraPosition.calcSub(cameraFocus);//O vetor olho-foco, no sist. de coordenadas da origem
             final float len = vecFromOrigin.length();
             cam.moveCamera(Camera.CAMERA_MOVEIN, len);
-            cam.rotateAxis(new SimpleVector(1,0,0), angAsRad);
+            final SimpleVector vX = cam.getXAxis();
+            cam.rotateAxis(vX, angAsRad);
             cam.moveCamera(Camera.CAMERA_MOVEOUT, len);
             Log.d("ANGULO_touchturnup", ""+Math.toDegrees(touchTurnUp));
-            
+
         }
         //Flipa a câmera pra corrigir o y
         cam.rotateCameraZ((float)Math.toRadians(180));
