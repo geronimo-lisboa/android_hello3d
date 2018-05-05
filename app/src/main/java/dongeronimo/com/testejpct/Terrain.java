@@ -55,10 +55,11 @@ public class Terrain {
         Log.d("TEMPO_PASSAGEM_GEO", (t1-t0)+" ms");
         tt = tt + (t1-t0);
         t0 = System.currentTimeMillis();
-        superficie.setCulling(false);
+        superficie.setCulling(true);
         superficie.calcBoundingBox();
         superficie.calcCenter();
         superficie.strip();
+        superficie.touch();
         t1 = System.currentTimeMillis();
         Log.d("TEMPO_BUILD_DA_API", (t1-t0)+" ms");//
         tt = tt + (t1-t0);
@@ -87,7 +88,7 @@ public class Terrain {
                 final int mask = 0b00000000_00000000_00000000_11111111;
                 int color = colorRawData & mask;
                 //O nivel do mar é hardcoded no momento pra 10 e um fator de escala p 0.5
-                heightValues[ln][col] = (color*1.0f) * 0.025f;
+                heightValues[ln][col] = (color*1.0f) * 0.1f;
             }
         }
         //Ao final disso eu tenho um array de floats com o heightmap, posso já começar a usar pra montar a superficie
