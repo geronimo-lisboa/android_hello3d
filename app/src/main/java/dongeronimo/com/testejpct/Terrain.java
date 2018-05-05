@@ -2,6 +2,7 @@ package dongeronimo.com.testejpct;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.threed.jpct.GLSLShader;
 import com.threed.jpct.Loader;
@@ -23,6 +24,7 @@ public class Terrain {
     private GradientCalculator gradientCalculator;
 
     private void buildTerrain(){
+        final long t0 = System.currentTimeMillis();
         //Construção da geometria
         final int bmpLargura = heightmapBitmap.getWidth();
         final int bmpAltura = heightmapBitmap.getHeight();
@@ -62,6 +64,8 @@ public class Terrain {
         superficie.setShader(shader);
         //tá pronto
         alredyBuilt = true;
+        final long t = System.currentTimeMillis();
+        Log.d("TEMPO_GASTO", ""+(t - t0));
     }
 
     public Terrain(Bitmap heightmapBmp, Context ctx){

@@ -124,7 +124,6 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             Log.d("ANGULO_h", ""+Math.toDegrees(touchTurn));
         }
         if(touchTurnUp!=0){
-
             double angAsDeg =Math.toDegrees(touchTurnUp);
             if(angAsDeg <= -45)
                 angAsDeg = -45;
@@ -139,7 +138,6 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             cam.rotateAxis(vX, angAsRad);
             cam.moveCamera(Camera.CAMERA_MOVEOUT, len);
             Log.d("ANGULO_touchturnup", ""+Math.toDegrees(touchTurnUp));
-
         }
         //Flipa a câmera pra corrigir o y
         cam.rotateCameraZ((float)Math.toRadians(180));
