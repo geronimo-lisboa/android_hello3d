@@ -143,6 +143,9 @@ public class MyRenderer implements GLSurfaceView.Renderer {
         }
         //Flipa a câmera pra corrigir o y
         cam.rotateCameraZ((float)Math.toRadians(180));
+        //Passa a posição da câmera pro shader
+        terrain.setCameraPosition(cam.getPosition());
+
         // Draw the main screen
         fb.clear(RGBColor.GREEN);
         world.renderScene(fb);

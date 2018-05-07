@@ -79,6 +79,10 @@ public class Terrain {
         alredyBuilt = true;
     }
 
+    public void setCameraPosition(SimpleVector cp){
+        shader.setUniform("cameraPosition", cp);
+    }
+
     public Terrain(Bitmap heightmapBmp, Context ctx){
         this.context = ctx;
         //Passagem dos dados do bitmap pra matrix do heightmap.
