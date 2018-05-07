@@ -24,7 +24,9 @@ public class HelloWorld extends Activity implements ScaleGestureDetector.OnScale
     protected void onCreate(Bundle savedInstanceState) {
         //Invoca o construtor herdado antes de fazer as coisas do filho, necessário
         super.onCreate(savedInstanceState);
-        //Cria a surface view
+        setContentView(R.layout.teste_shader);//Aplica o layout
+        //Cria o opengl dentro do layout.
+/*        //Cria a surface view
         glView = new GLSurfaceView(getApplication());
         glView.setEGLContextClientVersion(2);
         glView.setPreserveEGLContextOnPause(true);
@@ -33,18 +35,17 @@ public class HelloWorld extends Activity implements ScaleGestureDetector.OnScale
         glView.setRenderer(renderer);
         //Põe a surface view na tela
         setContentView(glView);
-        //setContentView(R.layout.activity_hello_world);//não vai ser usado nesse momento.
-        gestureDec = new ScaleGestureDetector(this.getApplicationContext(), this);
+        gestureDec = new ScaleGestureDetector(this.getApplicationContext(), this);*/
     }
     @Override
     protected void onPause(){
         super.onPause();
-        glView.onPause();
+//        glView.onPause();
     }
     @Override
     protected void onResume(){
         super.onResume();
-        glView.onResume();
+//        glView.onResume();
     }
 
     @Override
@@ -130,7 +131,7 @@ public class HelloWorld extends Activity implements ScaleGestureDetector.OnScale
     }
     @Override
     public boolean onTouchEvent(MotionEvent me){
-        //Testa se é pra voar no mundo
+/*        //Testa se é pra voar no mundo
         if(flyOnWorldEvent(me)){
             return true;
         }
@@ -143,7 +144,7 @@ public class HelloWorld extends Activity implements ScaleGestureDetector.OnScale
         catch(Exception ex){
 
         }
-        //Testa se é pra rotacionar a câmera no mundo
+        //Testa se é pra rotacionar a câmera no mundo*/
         return super.onTouchEvent(me);
     }
 
