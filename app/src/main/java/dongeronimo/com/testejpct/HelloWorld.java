@@ -35,7 +35,7 @@ public class HelloWorld extends Activity implements ScaleGestureDetector.OnScale
         renderer = new MyRenderer(getApplication());
         glView.setRenderer(renderer);
         //Põe a surface view na tela
-        setContentView(glView);
+        //setContentView(glView);
         gestureDec = new ScaleGestureDetector(this.getApplicationContext(), this);
     }
     @Override
