@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.threed.jpct.GLSLShader;
 import com.threed.jpct.Loader;
+import com.threed.jpct.Matrix;
 import com.threed.jpct.Object3D;
 import com.threed.jpct.SimpleVector;
 /**
@@ -69,6 +70,10 @@ public class Terrain {
         String vertexShaderSrc = Loader.loadTextFile(context.getResources().openRawResource(R.raw.teste_vertex_shader));
         String fragShaderSrc = Loader.loadTextFile(context.getResources().openRawResource(R.raw.teste_fragment_shader));
         shader = new GLSLShader(vertexShaderSrc, fragShaderSrc);
+        Matrix tTrans = superficie.getTranslationMatrix();
+        Matrix tRot = superficie.getRotationMatrix();
+        tRot.matMul(tTrans);
+        shader.setUniform("modelMatrix", tRot);
         superficie.setShader(shader);
         //tá pronto
         alredyBuilt = true;
