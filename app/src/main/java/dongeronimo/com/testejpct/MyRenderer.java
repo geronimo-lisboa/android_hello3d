@@ -105,6 +105,8 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
 
     }
+    private int fps = 0;
+    private long time = System.currentTimeMillis();
     float xR = 0;
     @Override
     public void onDrawFrame(GL10 gl10) {
@@ -147,24 +149,36 @@ public class MyRenderer implements GLSurfaceView.Renderer {
         world.draw(fb);
         fb.display();
 
+        if (System.currentTimeMillis() - time >= 1000) {
+            Log.d("SimCity_FPS", ""+fps);
+            fps = 0;
+            time = System.currentTimeMillis();
+        }
+        fps++;
     }
 
     public void incrementCameraZ() {
-        cameraPosition = cameraPosition.calcAdd(new SimpleVector(0,0,1));
-        cameraFocus = cameraFocus.calcAdd(new SimpleVector(0,0,1));
+        final SimpleVector vec = new SimpleVector(0,0,1);
+        cameraPosition = cameraPosition.calcAdd(vec);
+        cameraFocus = cameraFocus.calcAdd(vec);
     }
 
     public void decrementCameraZ() {
-        cameraPosition = cameraPosition.calcAdd(new SimpleVector(0, 0, -1));
-        cameraFocus = cameraFocus.calcAdd(new SimpleVector(0, 0, -1));
+        SimpleVector vec = new SimpleVector(0,0,1);
+        vec.scalarMul(-1.0f);
+        cameraPosition = cameraPosition.calcAdd(vec);
+        cameraFocus = cameraFocus.calcAdd(vec);
     }
     public void decrementCameraX() {
-        cameraPosition = cameraPosition.calcAdd(new SimpleVector(-1, 0, 0));
-        cameraFocus = cameraFocus.calcAdd(new SimpleVector(-1, 0, 0));
+        SimpleVector vec = new SimpleVector(1,0,0);
+        vec.scalarMul(-1.0f);
+        cameraPosition = cameraPosition.calcAdd(vec);
+        cameraFocus = cameraFocus.calcAdd(vec);
     }
 
     public void incrementCameraX() {
-        cameraPosition = cameraPosition.calcAdd(new SimpleVector(1, 0, 0));
-        cameraFocus = cameraFocus.calcAdd(new SimpleVector(1, 0, 0));
+        SimpleVector vec = new SimpleVector(1,0,0);
+        cameraPosition = cameraPosition.calcAdd(vec);
+        cameraFocus = cameraFocus.calcAdd(vec);
     }
 }

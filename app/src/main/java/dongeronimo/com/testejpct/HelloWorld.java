@@ -137,6 +137,12 @@ public class HelloWorld extends Activity implements ScaleGestureDetector.OnScale
         if(rotateCamera(me)){
             return true;
         }
+        try{
+            Thread.sleep(50);
+        }
+        catch(Exception ex){
+
+        }
         //Testa se é pra rotacionar a câmera no mundo
         return super.onTouchEvent(me);
     }
