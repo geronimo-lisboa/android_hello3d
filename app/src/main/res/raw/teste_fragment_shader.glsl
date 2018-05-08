@@ -2,6 +2,7 @@ precision mediump float;
 uniform mat4 modelMatrix;
 uniform vec3 lightPositions[8];
 uniform vec3 cameraPosition;
+uniform float borderCoefficent;
 
 varying vec3 vNormal;
 varying vec3 vPosition;
@@ -18,7 +19,7 @@ void main() {
     vec3 camVector = normalize(cameraPosition - worldPosition);
     float relationBetweenFragAndCam = max(0.0, dot(camVector, worldNormal));
     vec3 colors[8];
-    if (relationBetweenFragAndCam < 0.4){
+    if (relationBetweenFragAndCam < borderCoefficent){
         gl_FragColor = vec4(0,0,0,1);//preto
     }
     else{

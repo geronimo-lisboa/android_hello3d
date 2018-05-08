@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 /**
  * Essa tela mostra a cena 3d. No momento seu layout é construído manualmente, ignorando o arquivo
@@ -37,6 +41,34 @@ public class HelloWorld extends Activity implements ScaleGestureDetector.OnScale
         //Põe a surface view na tela
         //setContentView(glView);
         gestureDec = new ScaleGestureDetector(this.getApplicationContext(), this);
+        //Adiciona validação aos editText
+        final EditText editBorderCoef = (EditText)findViewById(R.id.editBorderCoef);
+        editBorderCoef.addTextChangedListener(new TextValidator(editBorderCoef) {
+            @Override
+            public void validate(TextView textView, String text) {
+                try{
+                    float testCast = Float.parseFloat(text);
+                    if(testCast < 0)
+                        throw new NumberFormatException("Não pode ser negativo");
+                    if(testCast == 0)
+                        throw new NumberFormatException("Não pode ser zero");
+                    if(testCast >= 1)
+                        throw new NumberFormatException("Nâo pode ser maior ou igual a 1");
+                }
+                catch(NumberFormatException ex){
+                    textView.setError(ex.getMessage());
+                }
+            }
+        });
+        editBorderCoef.setText(renderer.getTerrain().getShaderBorderCoefficent()+"");
+        //seta a operação quando clicar no botaõ
+        Button btnApply = (Button)findViewById(R.id.btnApplyChanges);
+        btnApply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                renderer.getTerrain().setShaderBorderCoefficent(Float.parseFloat(editBorderCoef.getText().toString()));
+            }
+        });
     }
     @Override
     protected void onPause(){

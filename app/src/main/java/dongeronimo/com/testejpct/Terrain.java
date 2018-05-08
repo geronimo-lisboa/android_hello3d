@@ -23,6 +23,15 @@ public class Terrain {
     private Object3D superficie;
     private GLSLShader shader;
     private GradientCalculator gradientCalculator;
+    private float shaderBorderCoefficent = 0.4f;
+
+    public float getShaderBorderCoefficent(){
+        return shaderBorderCoefficent;
+    }
+    public void setShaderBorderCoefficent(float v){
+        shaderBorderCoefficent = v;
+        shader.setUniform("borderCoefficent", v);
+    }
 
     private void buildTerrain(){
         //Construção da geometria

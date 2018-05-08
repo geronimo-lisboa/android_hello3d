@@ -184,4 +184,8 @@ public class MyRenderer implements GLSurfaceView.Renderer {
         cameraPosition = cameraPosition.calcAdd(vec);
         cameraFocus = cameraFocus.calcAdd(vec);
     }
+
+    public Terrain getTerrain() {
+        return terrain;
+    }
 }
