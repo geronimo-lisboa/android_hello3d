@@ -60,7 +60,7 @@ public class HelloWorld extends Activity implements ScaleGestureDetector.OnScale
                 }
             }
         });
-        editBorderCoef.setText(renderer.getTerrain().getShaderBorderCoefficent()+"");
+        editBorderCoef.setText(Terrain.getShaderBorderCoefficent()+"");
         //seta a operação quando clicar no botaõ
         Button btnApply = (Button)findViewById(R.id.btnApplyChanges);
         btnApply.setOnClickListener(new View.OnClickListener() {

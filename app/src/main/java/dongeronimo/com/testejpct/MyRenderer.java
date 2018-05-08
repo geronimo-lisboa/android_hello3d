@@ -65,9 +65,16 @@ public class MyRenderer implements GLSurfaceView.Renderer {
         //criação do mundo se ele não tiver sido criado
         if(world==null){
             world = new World();
-            world.setAmbientLight(20,20,20);
+            world.setAmbientLight(0,0, 0);
+            world.removeAllLights();
             sun = new Light(world);
             sun.setIntensity(250,250,250);
+            SimpleVector sv = new SimpleVector();
+            sv.set(SimpleVector.ORIGIN);
+            sv.x = 300;
+            sv.y = 300;
+            sv.z = 800;
+            sun.setPosition(sv);
 
             ///Pega o bitmap do terreno e gera os dados pro heightmap
             //Isso aqui é necessário para que o android não escale meu bitmap com o tamanho de tela quando
@@ -81,7 +88,7 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             world.addObject(terrain.getSurface());
             //Cria a câmera
             cam  = world.getCamera();
-            cameraPosition = new SimpleVector(0,20,-20);
+            cameraPosition = new SimpleVector(0,50,-50);
             cameraFocus = new SimpleVector(0,0,0);
             cam.setPosition(cameraPosition);
             cam.lookAt(cameraFocus);
@@ -92,11 +99,6 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             final float r = (float) Math.sqrt(vecFromOrigin.x * vecFromOrigin.x + vecFromOrigin.y*vecFromOrigin.y + vecFromOrigin.z*vecFromOrigin.z );
 
             //Seta a posição do sol
-            SimpleVector sv = new SimpleVector();
-            sv.set(SimpleVector.ORIGIN);
-            sv.y += 0;
-            sv.z -= 800;
-            sun.setPosition(sv);
             MemoryHelper.compact();
         }
     }

@@ -12,9 +12,7 @@ void main() {
     vec3 worldPosition = ( modelMatrix * vec4(vPosition, 1.0)).xyz;
     //Transformando a normal
     vec3 worldNormal = normalize(vec3(modelMatrix * vec4(vNormal,1.0)));
-    //vetor da fonte da luz pra posição espacial do vertice
-    vec3 lightPosition = lightPositions[0];
-    vec3 lightVector = normalize(lightPosition-worldPosition);
+
     //o vetor da posição da câmera para a posição do fragmento
     vec3 camVector = normalize(cameraPosition - worldPosition);
     float relationBetweenFragAndCam = max(0.0, dot(camVector, worldNormal));
@@ -24,6 +22,9 @@ void main() {
     }
     else{
         for(int i=0; i<8; i++){
+            //vetor da fonte da luz pra posição espacial do vertice
+            vec3 lightPosition = lightPositions[0];
+            vec3 lightVector = normalize(lightPosition-worldPosition);
             //Função de transferência da cor de toon. De acordo com o angulo entre a
             //normal e a luz escolhe-se um valor dessa tabela para ser o brilho
             float ToonThresholds[4];
