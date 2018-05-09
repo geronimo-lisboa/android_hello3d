@@ -76,7 +76,7 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             terrain = new Terrain(heightmapBmp, context);
             world.addObject(terrain.getSurface());
             //Cria a câmera
-            cameraHelper = new CameraHelper(world.getCamera(),  new SimpleVector(0,0,0),new SimpleVector(0,20,-20), 0, 0);
+            cameraHelper = new CameraHelper(world.getCamera(),  new SimpleVector(0,0,0),new SimpleVector(0,50,-60), 0, 0);
             cameraHelper.addShaderDataListener(new CameraHelper.ShaderDataListerner() {
                 @Override
                 public void apply(CameraHelper cameraHelper) {

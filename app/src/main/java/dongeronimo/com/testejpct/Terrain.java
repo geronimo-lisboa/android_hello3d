@@ -16,6 +16,8 @@ import com.threed.jpct.SimpleVector;
  * O objeto 3d resultante do algoritmo de heightmap está disponivel no método getSurface().
  * Uma vez criado o mapa ele é imutável.*/
 public class Terrain {
+    private SimpleVector terrainDiffuse = new SimpleVector(0.5, 0.4, 0.001);
+
     private Context context;
     private boolean alredyBuilt = false;
     private Bitmap heightmapBitmap;
@@ -23,6 +25,10 @@ public class Terrain {
     private Object3D superficie;
     private GLSLShader shader;
     private GradientCalculator gradientCalculator;
+
+    public void setDiffuse(SimpleVector rgb){
+        shader.setUniform("diffuse", rgb);
+    }
 
     private void buildTerrain(){
         //Construção da geometria
@@ -60,7 +66,7 @@ public class Terrain {
         superficie.calcBoundingBox();
         superficie.calcCenter();
         superficie.strip();
-        superficie.touch();
+        superficie.build();
         t1 = System.currentTimeMillis();
         Log.d("TEMPO_BUILD_DA_API", (t1-t0)+" ms");//
         tt = tt + (t1-t0);
@@ -75,6 +81,7 @@ public class Terrain {
         tRot.matMul(tTrans);
         shader.setUniform("modelMatrix", tRot);
         superficie.setShader(shader);
+        setDiffuse(terrainDiffuse);
         //tá pronto
         alredyBuilt = true;
     }
