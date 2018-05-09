@@ -66,7 +66,8 @@ public class Terrain {
         superficie.calcBoundingBox();
         superficie.calcCenter();
         superficie.strip();
-        superficie.build();
+        superficie.calcNormals();
+        //superficie.build();
         t1 = System.currentTimeMillis();
         Log.d("TEMPO_BUILD_DA_API", (t1-t0)+" ms");//
         tt = tt + (t1-t0);
