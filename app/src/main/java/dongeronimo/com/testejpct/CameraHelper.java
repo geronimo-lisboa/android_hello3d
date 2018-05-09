@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CameraHelper {
+    public static float verticalRotationNegativeLimit = -45;
+    public static float verticalRotationPositiveLimit = 30;
     public interface ShaderDataListerner{
         public void apply(CameraHelper cameraHelper);
     }
@@ -62,8 +64,19 @@ public class CameraHelper {
     public void addHorizontalRotation(float v){
         horizontalAxisRotation += v;
     }
+
+    private void validateVerticalRotation(){
+        double angAsDeg = Math.toDegrees(verticalAxisRotation);
+        if(angAsDeg <= verticalRotationNegativeLimit)
+            angAsDeg = verticalRotationNegativeLimit;
+        if(angAsDeg >= verticalRotationPositiveLimit)
+            angAsDeg = verticalRotationPositiveLimit;
+        final float angAsRad = (float)Math.toRadians(angAsDeg);
+        verticalAxisRotation = angAsRad;
+    }
     public void addVerticalRotation(float v){
         verticalAxisRotation += v;
+        validateVerticalRotation();
     }
     /**
      * Rotação ao redor da origem. O enum controla se é rotação na horizontal ou na vertical.
@@ -76,12 +89,12 @@ public class CameraHelper {
         //rotaciona
         switch (dir){
             case H:
-                final SimpleVector vX = camera.getXAxis();
-                camera.rotateAxis(vX, horizontalAxisRotation);
+                final SimpleVector vY = camera.getYAxis();
+                camera.rotateAxis(vY, horizontalAxisRotation);
                 break;
             case V:
-                final SimpleVector vY = camera.getYAxis();
-                camera.rotateAxis(vY, verticalAxisRotation);
+                final SimpleVector vX = camera.getXAxis();
+                camera.rotateAxis(vX, verticalAxisRotation);
                 break;
         }
         //retorna.
