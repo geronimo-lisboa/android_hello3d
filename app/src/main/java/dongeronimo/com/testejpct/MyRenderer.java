@@ -23,18 +23,14 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     private FrameBuffer fb = null;
     private World world = null;
     private Light sun = null;
-
+    //Além de guardar a câmera do world serve pra encapsular um monte de operações e deve ser o meio
+    //preferido de operar com a câmera.
     private CameraHelper cameraHelper;
 
-   // private Camera cam;
     private Context context;
 
-
     private Terrain terrain;
-    //private SimpleVector cameraFocus;
-    //private SimpleVector cameraPosition;
-    //private float touchTurnUp;
-    //private float touchTurn = 0;
+
 
     public void setTouchTurn(float v){
         cameraHelper.addHorizontalRotation(v);
@@ -109,40 +105,6 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl10) {
         //Atualiza a câmera
         cameraHelper.update();
-        //Posiciona
-       // cam  = world.getCamera();
-       // cam.setPosition(cameraPosition);
-       // cam.lookAt(cameraFocus);  //superficie.getCenter());
-        //Rotaciona ao redor do eixo
-        /*if(touchTurn!=0){
-            SimpleVector vecFromOrigin = cameraPosition.calcSub(cameraFocus);//O vetor olho-foco, no sist. de coordenadas da origem
-            final float len = vecFromOrigin.length();
-            cam.moveCamera(Camera.CAMERA_MOVEIN, len);
-            SimpleVector vY = cam.getYAxis();
-            cam.rotateAxis(vY, touchTurn);
-            cam.moveCamera(Camera.CAMERA_MOVEOUT, len);
-            Log.d("ANGULO_h", ""+Math.toDegrees(touchTurn));
-        }
-        if(touchTurnUp!=0){
-            double angAsDeg =Math.toDegrees(touchTurnUp);
-            if(angAsDeg <= -45)
-                angAsDeg = -45;
-            if(angAsDeg >= 45)
-                angAsDeg = 45;
-            final float angAsRad = (float)Math.toRadians(angAsDeg);
-            touchTurnUp = angAsRad;
-            SimpleVector vecFromOrigin = cameraPosition.calcSub(cameraFocus);//O vetor olho-foco, no sist. de coordenadas da origem
-            final float len = vecFromOrigin.length();
-            cam.moveCamera(Camera.CAMERA_MOVEIN, len);
-            final SimpleVector vX = cam.getXAxis();
-            cam.rotateAxis(vX, angAsRad);
-            cam.moveCamera(Camera.CAMERA_MOVEOUT, len);
-            Log.d("ANGULO_touchturnup", ""+Math.toDegrees(touchTurnUp));
-        }
-        //Flipa a câmera pra corrigir o y
-        cam.rotateCameraZ((float)Math.toRadians(180));*/
-        //Passa a posição da câmera pro shader
-        //terrain.setCameraPosition(cam.getPosition());
 
         // Draw the main screen
         fb.clear(RGBColor.GREEN);

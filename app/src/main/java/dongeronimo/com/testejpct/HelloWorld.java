@@ -24,15 +24,17 @@ public class HelloWorld extends Activity implements ScaleGestureDetector.OnScale
     protected void onCreate(Bundle savedInstanceState) {
         //Invoca o construtor herdado antes de fazer as coisas do filho, necessário
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_hello_world);//não vai ser usado nesse momento.
+
         //Cria a surface view
-        glView = new GLSurfaceView(getApplication());
+        glView = findViewById(R.id.glView);//new GLSurfaceView(getApplication());
         glView.setEGLContextClientVersion(2);
         glView.setPreserveEGLContextOnPause(true);
         //Cria o renderer e o põe na surface view
         renderer = new MyRenderer(getApplication());
         glView.setRenderer(renderer);
         //Põe a surface view na tela
-        setContentView(glView);
+        //setContentView(glView);
         //setContentView(R.layout.activity_hello_world);//não vai ser usado nesse momento.
         gestureDec = new ScaleGestureDetector(this.getApplicationContext(), this);
     }
