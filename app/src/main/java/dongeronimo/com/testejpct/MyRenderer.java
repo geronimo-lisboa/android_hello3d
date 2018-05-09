@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
-import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.Light;
 import com.threed.jpct.RGBColor;
@@ -25,22 +24,23 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     private World world = null;
     private Light sun = null;
 
-    private Camera cam;
+    private CameraHelper cameraHelper;
+
+   // private Camera cam;
     private Context context;
 
-    private float touchTurnUp;
-    private Terrain terrain;
-    private SimpleVector cameraFocus;
-    private SimpleVector cameraPosition;
 
-    private float touchTurn = 0;
+    private Terrain terrain;
+    //private SimpleVector cameraFocus;
+    //private SimpleVector cameraPosition;
+    //private float touchTurnUp;
+    //private float touchTurn = 0;
 
     public void setTouchTurn(float v){
-        touchTurn += v;
+        cameraHelper.addHorizontalRotation(v);
     }
     public void setTouchTurnUp(float v){
-        touchTurnUp += v;
-
+        cameraHelper.addVerticalRotation(v);
     }
 
     public MyRenderer(Context ctx){
@@ -80,17 +80,14 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             terrain = new Terrain(heightmapBmp, context);
             world.addObject(terrain.getSurface());
             //Cria a câmera
-            cam  = world.getCamera();
-            cameraPosition = new SimpleVector(0,20,-20);
-            cameraFocus = new SimpleVector(0,0,0);
-            cam.setPosition(cameraPosition);
-            cam.lookAt(cameraFocus);
-            SimpleVector camDirection = cam.getDirection();
-
-            //Agora o cálculo do azimute e elevação iniciais
-            SimpleVector vecFromOrigin = cameraPosition.calcSub(cameraFocus);//O vetor olho-foco, no sist. de coordenadas da origem
-            final float r = (float) Math.sqrt(vecFromOrigin.x * vecFromOrigin.x + vecFromOrigin.y*vecFromOrigin.y + vecFromOrigin.z*vecFromOrigin.z );
-
+            cameraHelper = new CameraHelper(world.getCamera(),  new SimpleVector(0,0,0),new SimpleVector(0,20,-20), 0, 0);
+            cameraHelper.addShaderDataListener(new CameraHelper.ShaderDataListerner() {
+                @Override
+                public void apply(CameraHelper cameraHelper) {
+                    //Passa a posição da câmera pro shader
+                    terrain.setCameraPosition(cameraHelper.getCameraPosition());
+                }
+            });
             //Seta a posição do sol
             SimpleVector sv = new SimpleVector();
             sv.set(SimpleVector.ORIGIN);
@@ -111,12 +108,13 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl10) {
         //Atualiza a câmera
+        cameraHelper.update();
         //Posiciona
-        cam  = world.getCamera();
-        cam.setPosition(cameraPosition);
-        cam.lookAt(cameraFocus);  //superficie.getCenter());
+       // cam  = world.getCamera();
+       // cam.setPosition(cameraPosition);
+       // cam.lookAt(cameraFocus);  //superficie.getCenter());
         //Rotaciona ao redor do eixo
-        if(touchTurn!=0){
+        /*if(touchTurn!=0){
             SimpleVector vecFromOrigin = cameraPosition.calcSub(cameraFocus);//O vetor olho-foco, no sist. de coordenadas da origem
             final float len = vecFromOrigin.length();
             cam.moveCamera(Camera.CAMERA_MOVEIN, len);
@@ -142,9 +140,9 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             Log.d("ANGULO_touchturnup", ""+Math.toDegrees(touchTurnUp));
         }
         //Flipa a câmera pra corrigir o y
-        cam.rotateCameraZ((float)Math.toRadians(180));
+        cam.rotateCameraZ((float)Math.toRadians(180));*/
         //Passa a posição da câmera pro shader
-        terrain.setCameraPosition(cam.getPosition());
+        //terrain.setCameraPosition(cam.getPosition());
 
         // Draw the main screen
         fb.clear(RGBColor.GREEN);
@@ -161,27 +159,17 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     }
 
     public void incrementCameraZ() {
-        final SimpleVector vec = new SimpleVector(0,0,1);
-        cameraPosition = cameraPosition.calcAdd(vec);
-        cameraFocus = cameraFocus.calcAdd(vec);
+        cameraHelper.moveFoward();
     }
 
     public void decrementCameraZ() {
-        SimpleVector vec = new SimpleVector(0,0,1);
-        vec.scalarMul(-1.0f);
-        cameraPosition = cameraPosition.calcAdd(vec);
-        cameraFocus = cameraFocus.calcAdd(vec);
+        cameraHelper.moveBackward();
     }
     public void decrementCameraX() {
-        SimpleVector vec = new SimpleVector(1,0,0);
-        vec.scalarMul(-1.0f);
-        cameraPosition = cameraPosition.calcAdd(vec);
-        cameraFocus = cameraFocus.calcAdd(vec);
+        cameraHelper.moveLeft();
     }
 
     public void incrementCameraX() {
-        SimpleVector vec = new SimpleVector(1,0,0);
-        cameraPosition = cameraPosition.calcAdd(vec);
-        cameraFocus = cameraFocus.calcAdd(vec);
+        cameraHelper.moveRight();
     }
 }
