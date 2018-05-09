@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.View;
+import android.widget.Button;
 
 /**
  * Essa tela mostra a cena 3d. No momento seu layout é construído manualmente, ignorando o arquivo
@@ -37,6 +39,14 @@ public class HelloWorld extends Activity implements ScaleGestureDetector.OnScale
         //setContentView(glView);
         //setContentView(R.layout.activity_hello_world);//não vai ser usado nesse momento.
         gestureDec = new ScaleGestureDetector(this.getApplicationContext(), this);
+        //Seta os handlers
+        Button btnResetCam = findViewById(R.id.btnResetCam);
+        btnResetCam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                renderer.resetCamera();
+            }
+        });
     }
     @Override
     protected void onPause(){

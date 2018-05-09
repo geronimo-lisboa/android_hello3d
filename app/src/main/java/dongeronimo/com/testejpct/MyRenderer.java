@@ -134,4 +134,8 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     public void incrementCameraX() {
         cameraHelper.moveRight();
     }
+
+    public void resetCamera() {
+        cameraHelper.reset();
+    }
 }
