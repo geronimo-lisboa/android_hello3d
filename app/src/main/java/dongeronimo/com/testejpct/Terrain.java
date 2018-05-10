@@ -26,6 +26,10 @@ public class Terrain {
     private GLSLShader shader;
     private GradientCalculator gradientCalculator;
 
+    public void setTestLightPos(SimpleVector v){
+        shader.setUniform("testLightPos", v);
+    }
+
     public void setDiffuse(SimpleVector rgb){
         shader.setUniform("diffuse", rgb);
     }
@@ -62,11 +66,11 @@ public class Terrain {
         Log.d("TEMPO_PASSAGEM_GEO", (t1-t0)+" ms");
         tt = tt + (t1-t0);
         t0 = System.currentTimeMillis();
-        superficie.setCulling(true);
+        superficie.cullingIsInverted();
         superficie.calcBoundingBox();
         superficie.calcCenter();
         superficie.strip();
-        superficie.calcNormals();
+        //superficie.calcNormals();
         //superficie.build();
         t1 = System.currentTimeMillis();
         Log.d("TEMPO_BUILD_DA_API", (t1-t0)+" ms");//
@@ -81,6 +85,7 @@ public class Terrain {
         Matrix tRot = superficie.getRotationMatrix();
         tRot.matMul(tTrans);
         shader.setUniform("modelMatrix", tRot);
+
         superficie.setShader(shader);
         setDiffuse(terrainDiffuse);
         //tá pronto

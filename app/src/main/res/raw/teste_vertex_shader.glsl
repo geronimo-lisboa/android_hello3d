@@ -24,13 +24,14 @@ attribute vec2 texture0;
 
 varying vec4 vertexColor;
 varying vec3 vNormalEye;
+varying vec3 vNormal;
 varying vec3 vPosition;
 
 const vec4 WHITE = vec4(1,1,1,1);
 
 void main() {
     vNormalEye = normalize(modelViewMatrix * vec4(normal,0.0)).xyz;
-
+    vNormal = normal;
     gl_Position = modelViewProjectionMatrix * position;
     vPosition = position.xyz;
 }

@@ -8,6 +8,9 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+
+import com.threed.jpct.SimpleVector;
 
 /**
  * Essa tela mostra a cena 3d. No momento seu layout é construído manualmente, ignorando o arquivo
@@ -45,6 +48,39 @@ public class HelloWorld extends Activity implements ScaleGestureDetector.OnScale
             @Override
             public void onClick(View view) {
                 renderer.resetCamera();
+            }
+        });
+        final TextView edtX = findViewById(R.id.edtLightX);
+        edtX.addTextChangedListener(new TextValidator(edtX) {
+            @Override
+            public void validate(TextView textView, String text) {
+
+            }
+        });
+        final TextView edtY = findViewById(R.id.edtLightY);
+        edtY.addTextChangedListener(new TextValidator(edtY) {
+            @Override
+            public void validate(TextView textView, String text) {
+
+            }
+        });
+        final TextView edtZ = findViewById(R.id.edtLightY);
+        edtZ.addTextChangedListener(new TextValidator(edtZ) {
+            @Override
+            public void validate(TextView textView, String text) {
+
+            }
+        });
+
+        Button btnApplyLuz = findViewById(R.id.btnUpdateLuz);
+        btnApplyLuz.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                final float x = Float.parseFloat(edtX.getText().toString());
+                final float y = Float.parseFloat(edtY.getText().toString());
+                final float z = Float.parseFloat(edtZ.getText().toString());
+                SimpleVector p = new SimpleVector(x,y,z);
+                renderer.getTerrain().setTestLightPos(p);
             }
         });
     }
