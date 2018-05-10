@@ -87,9 +87,9 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             //Seta a posição do sol
             SimpleVector sv = new SimpleVector();
             sv.set(SimpleVector.ORIGIN);
-            sv.x += 300;
+            sv.x += 0;
             sv.y += 500;
-            sv.z += 800;
+            sv.z += 0;
             sun.setPosition(sv);
             MemoryHelper.compact();
         }

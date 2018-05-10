@@ -41,18 +41,23 @@ public class Terrain {
         final int numeroDeFaces = (bmpLargura-1) * (bmpAltura-1);
         final int numeroDeTriangulos = numeroDeFaces * 2;
         superficie = new Object3D(numeroDeTriangulos);
+        superficie.setCulling(false);
+        superficie.disableVertexSharing();
+
         //calculo do centro do mundo
         final float worldOffsetX =  bmpLargura/2 * -1.0f;
         final float worldOffsetZ =  bmpAltura/2 * -1.0f;
         long tt = 0;
         long t0 = System.currentTimeMillis();
+
         //percorre o heightmap criando as faces.
         for(int y=0; y<bmpAltura-1; y++){
             for(int x=0; x<bmpLargura-1; x++){
                 //Triangulo 01
-                SimpleVector ponto01 = new SimpleVector(x + worldOffsetX,heightValues[x][y], y+worldOffsetZ );
-                SimpleVector ponto02 = new SimpleVector(x+ worldOffsetX,heightValues[x][y+1], y+1+worldOffsetZ);
-                SimpleVector ponto03 = new SimpleVector(x+1+ worldOffsetX,heightValues[x+1][y], y +worldOffsetZ);
+                SimpleVector ponto01 = new SimpleVector(x + worldOffsetX, heightValues[x][y], y+worldOffsetZ );
+                SimpleVector ponto02 = new SimpleVector(x+ worldOffsetX, heightValues[x][y+1], y+1+worldOffsetZ);
+                SimpleVector ponto03 = new SimpleVector(x+1+ worldOffsetX, heightValues[x+1][y], y +worldOffsetZ);
+
                 //Triangulo 02
                 SimpleVector ponto04 = new SimpleVector(x+ worldOffsetX,heightValues[x][y+1], y+1+worldOffsetZ);
                 SimpleVector ponto05 = new SimpleVector(x+1+ worldOffsetX,heightValues[x+1][y+1], y+1 +worldOffsetZ);
@@ -66,11 +71,12 @@ public class Terrain {
         Log.d("TEMPO_PASSAGEM_GEO", (t1-t0)+" ms");
         tt = tt + (t1-t0);
         t0 = System.currentTimeMillis();
-        superficie.cullingIsInverted();
+        //superficie.cullingIsInverted();
         superficie.calcBoundingBox();
         superficie.calcCenter();
-        superficie.strip();
-        //superficie.calcNormals();
+        superficie.calcNormals();
+        superficie.calcTangentVectors();
+        //superficie.strip();
         //superficie.build();
         t1 = System.currentTimeMillis();
         Log.d("TEMPO_BUILD_DA_API", (t1-t0)+" ms");//
