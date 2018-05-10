@@ -84,6 +84,7 @@ public class Terrain {
         Matrix tTrans = superficie.getTranslationMatrix();
         Matrix tRot = superficie.getRotationMatrix();
         tRot.matMul(tTrans);
+        tRot = tRot.transpose();
         shader.setUniform("modelMatrix", tRot);
 
         superficie.setShader(shader);

@@ -17,7 +17,7 @@ void main() {
     vec3 lightPosition = testLightPos;
     vec3 lightVector = normalize(lightPosition-worldPosition);
     //calcula o brilho
-    float brightness = dot(vNormal, lightVector);
+    float brightness = dot(vNormalEye, lightVector);
     //calcula a cor
     vec3 outputColor = vec3(diffuse * brightness);
 
