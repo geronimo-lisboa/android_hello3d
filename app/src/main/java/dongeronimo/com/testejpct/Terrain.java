@@ -55,6 +55,7 @@ public class Terrain {
         int indices[] = new int[numeroDeTriangulos * 3];
 
         int posInCoords = 0;
+        int posInNormals = 0;
         //percorre o heightmap criando as faces.
         for(int y=0; y<bmpAltura-1; y++) {
             for (int x = 0; x < bmpLargura - 1; x++) {
@@ -74,6 +75,22 @@ public class Terrain {
                 coordinates[posInCoords + 1] = ponto03.toArray()[1];
                 coordinates[posInCoords + 2] = ponto03.toArray()[2];
                 posInCoords = posInCoords + 3;
+                //Calcula as normais desses vertices
+                SimpleVector u0 = ponto02.calcSub(ponto01);
+                SimpleVector v0 = ponto03.calcSub(ponto02);
+                SimpleVector t1Normal = u0.calcCross(v0);
+                normals[posInNormals + 0] = t1Normal.toArray()[0];
+                normals[posInNormals + 1] = t1Normal.toArray()[1];
+                normals[posInNormals + 2] = t1Normal.toArray()[2];
+                posInNormals+=3;
+                normals[posInNormals + 0] = t1Normal.toArray()[0];
+                normals[posInNormals + 1] = t1Normal.toArray()[1];
+                normals[posInNormals + 2] = t1Normal.toArray()[2];
+                posInNormals+=3;
+                normals[posInNormals + 0] = t1Normal.toArray()[0];
+                normals[posInNormals + 1] = t1Normal.toArray()[1];
+                normals[posInNormals + 2] = t1Normal.toArray()[2];
+                posInNormals+=3;
 
                 //Triangulo 02
                 SimpleVector ponto04 = new SimpleVector(x + worldOffsetX, heightValues[x][y + 1], y + 1 + worldOffsetZ);
@@ -91,6 +108,23 @@ public class Terrain {
                 coordinates[posInCoords + 1] = ponto06.toArray()[1];
                 coordinates[posInCoords + 2] = ponto06.toArray()[2];
                 posInCoords = posInCoords + 3;
+
+                SimpleVector u1 = ponto05.calcSub(ponto04);
+                SimpleVector v1 = ponto06.calcSub(ponto04);
+                SimpleVector t2Normal = u1.calcCross(v1);
+                normals[posInNormals + 0] = t2Normal.toArray()[0];
+                normals[posInNormals + 1] = t2Normal.toArray()[1];
+                normals[posInNormals + 2] = t2Normal.toArray()[2];
+                posInNormals+=3;
+                normals[posInNormals + 0] = t2Normal.toArray()[0];
+                normals[posInNormals + 1] = t2Normal.toArray()[1];
+                normals[posInNormals + 2] = t2Normal.toArray()[2];
+                posInNormals+=3;
+                normals[posInNormals + 0] = t2Normal.toArray()[0];
+                normals[posInNormals + 1] = t2Normal.toArray()[1];
+                normals[posInNormals + 2] = t2Normal.toArray()[2];
+                posInNormals+=3;
+
                 //Adiciona à superficie
                 //superficie.addTriangle(ponto01,0,0, ponto02,0,1, ponto03,1,0);
                 //superficie.addTriangle(ponto04,0,1, ponto05,1,1, ponto06,1,0);
@@ -99,13 +133,15 @@ public class Terrain {
         for(int i=0; i<uvs.length; i++){
             uvs[i] = 0.0f;
         }//Com isso a lista de uvs está populada. No momento não uso a uv pra nada então vou preencher tudo com zero.
-        int posInNormals = 0;
+        /** Comentado pra teste.
+        posInNormals = 0;
         for(int i=0; i<normals.length; i=i+3){
             normals[posInNormals + 0 ] = 0;
             normals[posInNormals + 1 ] = 1;
             normals[posInNormals + 2 ] = 0;
             posInNormals += 3;
         }//Normais iguais pra todos nesse teste.
+         */
         for(int i=0; i<indices.length; i++){
             indices[i] = i;
         }//Indices criados
