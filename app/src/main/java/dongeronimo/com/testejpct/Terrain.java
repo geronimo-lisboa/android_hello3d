@@ -60,24 +60,24 @@ public class Terrain {
             for (int x = 0; x < bmpLargura - 1; x++) {
                 //Triangulo 01
                 SimpleVector ponto01 = new SimpleVector(x + worldOffsetX, heightValues[x][y], y + worldOffsetZ);
-                coordinates.put(new Pair<>(x,y), ponto01);
+                if ( coordinates.get(new Pair<>(x,y)) == null) coordinates.put(new Pair<>(x,y), ponto01);
                 SimpleVector ponto02 = new SimpleVector(x + worldOffsetX, heightValues[x][y + 1], y + 1 + worldOffsetZ);
-                coordinates.put(new Pair<>(x,y+1), ponto02);
+                if ( coordinates.get(new Pair<>(x,y+1)) == null) coordinates.put(new Pair<>(x,y+1), ponto02);
                 SimpleVector ponto03 = new SimpleVector(x + 1 + worldOffsetX, heightValues[x + 1][y], y + worldOffsetZ);
-                coordinates.put(new Pair<>(x+1,y), ponto03);
+                if ( coordinates.get(new Pair<>(x+1,y)) == null) coordinates.put(new Pair<>(x+1,y), ponto03);
                 //Triangulo 02
                 SimpleVector ponto04 = new SimpleVector(x + worldOffsetX, heightValues[x][y + 1], y + 1 + worldOffsetZ);
-                coordinates.put(new Pair<>(x,y+1), ponto04);
+                if ( coordinates.get(new Pair<>(x,y+1)) == null) coordinates.put(new Pair<>(x,y+1), ponto04);
                 SimpleVector ponto05 = new SimpleVector(x + 1 + worldOffsetX, heightValues[x + 1][y + 1], y + 1 + worldOffsetZ);
-                coordinates.put(new Pair<>(x+1,y+1), ponto05);
+                if ( coordinates.get(new Pair<>(x+1,y+1)) == null)coordinates.put(new Pair<>(x+1,y+1), ponto05);
                 SimpleVector ponto06 = new SimpleVector(x + 1 + worldOffsetX, heightValues[x + 1][y], y + worldOffsetZ);
-                coordinates.put(new Pair<>(x+1,y), ponto06);
+                if ( coordinates.get(new Pair<>(x+1,y)) == null)coordinates.put(new Pair<>(x+1,y), ponto06);
             }
         }//Com isso a lista de coordenadas está populada
-        //Elimina coordenadas duplicadas
+        //Cálculo das normais
         List<SimpleVector> normals = new ArrayList<>();
-        for(int y=0; y<bmpAltura-1; y++) {
-            for (int x = 0; x < bmpLargura - 1; x++) {
+        for(int y=0; y<bmpAltura; y++) {
+            for (int x = 0; x < bmpLargura ; x++) {
                 final Pair<Integer, Integer> currentPos = new Pair<>(x,y);
                 final Pair<Integer, Integer> north = new Pair<>(x, y - 1);
                 final Pair<Integer, Integer> south = new Pair<>(x, y + 1);
