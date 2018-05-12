@@ -13,6 +13,7 @@ import com.threed.jpct.SimpleVector;
 import com.threed.jpct.TextureManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -52,14 +53,118 @@ public class Terrain {
             uvs[i] = 0.0f;
         int coordIndex = 0;
         int pointId = 0;
+
+        long tBuildVertData = System.currentTimeMillis();
+        class DataStruct{
+            public final SimpleVector coord;//Pode ser repetido
+            public SimpleVector normal;//Não é final pq o objetivo é mudar isso no futuro
+            public final Integer index;//Unico
+            public final Pair<Integer, Integer> posInMatrix;//Pode ser repetido
+
+            public DataStruct(SimpleVector c, Integer i, Pair<Integer, Integer> pos){
+                coord = c;
+                index = i;
+                posInMatrix = pos;
+                normal = new SimpleVector(0,1,0);//Inicialização default da normal
+            }
+            @Override
+            public int hashCode() {
+                return super.hashCode();
+            }
+            @Override
+            public boolean equals(Object obj) {
+                return super.equals(obj);
+            }
+        }
+        int ___index = 0;
+        HashMap<Integer, DataStruct> tableVertexData = new HashMap<>();
+        HashMap<Pair<Integer, Integer>, List<Integer>> tablePosIndex = new HashMap<>();
+        for(int y=0; y<bmpAltura-1; y++) {
+            for (int x = 0; x < bmpLargura - 1; x++) {
+                ////Triangulo 01
+                SimpleVector ponto01 = new SimpleVector(x + worldOffsetX,heightValues[x][y], y+worldOffsetZ );
+                SimpleVector ponto02 = new SimpleVector(x+ worldOffsetX,heightValues[x][y+1], y+1+worldOffsetZ);
+                SimpleVector ponto03 = new SimpleVector(x+1+ worldOffsetX,heightValues[x+1][y], y +worldOffsetZ);
+                ///Triangulo 02
+                SimpleVector ponto04 = new SimpleVector(x+ worldOffsetX,heightValues[x][y+1], y+1+worldOffsetZ);
+                SimpleVector ponto05 = new SimpleVector(x+1+ worldOffsetX,heightValues[x+1][y+1], y+1 +worldOffsetZ);
+                SimpleVector ponto06 = new SimpleVector(x+1+ worldOffsetX,heightValues[x+1][y], y+worldOffsetZ);
+                //Bota na tabela de vertices
+                tableVertexData.put(___index, new DataStruct(ponto01,___index,new Pair<>(x,y)));
+                //Bota na tabela xy->index
+                ////Cria a lista se não existir
+                if(tablePosIndex.get(new Pair<>(x,y))==null)
+                    tablePosIndex.put(new Pair<>(x,y),new ArrayList<Integer>());
+                ///Adiciona
+                tablePosIndex.get(new Pair<>(x,y)).add(___index);
+                //agora incrementa o index
+                ___index++;
+
+                tableVertexData.put(___index, new DataStruct(ponto02,___index,new Pair<>(x,y+1)));
+                //Bota na tabela xy->index
+                ////Cria a lista se não existir
+                if(tablePosIndex.get(new Pair<>(x,y+1))==null)
+                    tablePosIndex.put(new Pair<>(x,y+1),new ArrayList<Integer>());
+                ///Adiciona
+                tablePosIndex.get(new Pair<>(x,y+1)).add(___index);
+                //agora incrementa o index
+                ___index++;
+
+                tableVertexData.put(___index, new DataStruct(ponto03,___index,new Pair<>(x+1,y)));
+                //Bota na tabela xy->index
+                ////Cria a lista se não existir
+                if(tablePosIndex.get(new Pair<>(x+1,y))==null)
+                    tablePosIndex.put(new Pair<>(x+1,y),new ArrayList<Integer>());
+                ///Adiciona
+                tablePosIndex.get(new Pair<>(x+1,y)).add(___index);
+                //agora incrementa o index
+                ___index++;
+
+                tableVertexData.put(___index, new DataStruct(ponto04,___index,new Pair<>(x,y+1)));
+                //Bota na tabela xy->index
+                ////Cria a lista se não existir
+                if(tablePosIndex.get(new Pair<>(x,y+1))==null)
+                    tablePosIndex.put(new Pair<>(x,y+1),new ArrayList<Integer>());
+                ///Adiciona
+                tablePosIndex.get(new Pair<>(x,y+1)).add(___index);
+                //agora incrementa o index
+                ___index++;
+
+                tableVertexData.put(___index, new DataStruct(ponto05,___index,new Pair<>(x+1,y+1)));
+                //Bota na tabela xy->index
+                ////Cria a lista se não existir
+                if(tablePosIndex.get(new Pair<>(x+1,y+1))==null)
+                    tablePosIndex.put(new Pair<>(x+1,y+1),new ArrayList<Integer>());
+                ///Adiciona
+                tablePosIndex.get(new Pair<>(x+1,y+1)).add(___index);
+                //agora incrementa o index
+                ___index++;
+
+                tableVertexData.put(___index, new DataStruct(ponto06,___index,new Pair<>(x+1,y)));
+                //Bota na tabela xy->index
+                ////Cria a lista se não existir
+                if(tablePosIndex.get(new Pair<>(x+1,y))==null)
+                    tablePosIndex.put(new Pair<>(x+1,y),new ArrayList<Integer>());
+                ///Adiciona
+                tablePosIndex.get(new Pair<>(x+1,y)).add(___index);
+                //agora incrementa o index
+                ___index++;
+            }
+        }//Essa tabela auxiliar está preenchida, com a chave sendo o index do vertice.
+        long t1BuildVertData = System.currentTimeMillis();
+        Log.d("TEMPO_BUILD_TABLE", (t1BuildVertData-tBuildVertData)+"");
+
+
+        //Montagem dos dados old school
+        long tBuildVertex = System.currentTimeMillis();
         for(int y=0; y<bmpAltura-1; y++){
             for(int x=0; x<bmpLargura-1; x++){
                 ////Triangulo 01
                 SimpleVector ponto01 = new SimpleVector(x + worldOffsetX,heightValues[x][y], y+worldOffsetZ );
-                coords[coordIndex + 0] = ponto01.x;
+                coords[coordIndex] = ponto01.x;
                 coords[coordIndex + 1] = ponto01.y;
                 coords[coordIndex + 2] = ponto01.z;
-                norms[coordIndex + 0 ] = 0;
+                norms[coordIndex] = 0;
                 norms[coordIndex + 1 ] = 1;
                 norms[coordIndex + 2 ] = 0;
                 indexes[pointId] = pointId;
@@ -68,10 +173,10 @@ public class Terrain {
                 xyMap.add(new Pair<Integer, Integer>(x,y));
 
                 SimpleVector ponto02 = new SimpleVector(x+ worldOffsetX,heightValues[x][y+1], y+1+worldOffsetZ);
-                coords[coordIndex + 0] = ponto02.x;
+                coords[coordIndex] = ponto02.x;
                 coords[coordIndex + 1] = ponto02.y;
                 coords[coordIndex + 2] = ponto02.z;
-                norms[coordIndex + 0 ] = 0;
+                norms[coordIndex] = 0;
                 norms[coordIndex + 1 ] = 1;
                 norms[coordIndex + 2 ] = 0;
                 indexes[pointId] = pointId;
@@ -80,10 +185,10 @@ public class Terrain {
                 xyMap.add(new Pair<Integer, Integer>(x,y+1));
 
                 SimpleVector ponto03 = new SimpleVector(x+1+ worldOffsetX,heightValues[x+1][y], y +worldOffsetZ);
-                coords[coordIndex + 0] = ponto03.x;
+                coords[coordIndex] = ponto03.x;
                 coords[coordIndex + 1] = ponto03.y;
                 coords[coordIndex + 2] = ponto03.z;
-                norms[coordIndex + 0 ] = 0;
+                norms[coordIndex] = 0;
                 norms[coordIndex + 1 ] = 1;
                 norms[coordIndex + 2 ] = 0;
                 indexes[pointId] = pointId;
@@ -93,10 +198,10 @@ public class Terrain {
 
                 //Triangulo 02
                 SimpleVector ponto04 = new SimpleVector(x+ worldOffsetX,heightValues[x][y+1], y+1+worldOffsetZ);
-                coords[coordIndex + 0] = ponto04.x;
+                coords[coordIndex] = ponto04.x;
                 coords[coordIndex + 1] = ponto04.y;
                 coords[coordIndex + 2] = ponto04.z;
-                norms[coordIndex + 0 ] = 0;
+                norms[coordIndex] = 0;
                 norms[coordIndex + 1 ] = 1;
                 norms[coordIndex + 2 ] = 0;
                 indexes[pointId] = pointId;
@@ -105,10 +210,10 @@ public class Terrain {
                 xyMap.add(new Pair<Integer, Integer>(x,y+1));
 
                 SimpleVector ponto05 = new SimpleVector(x+1+ worldOffsetX,heightValues[x+1][y+1], y+1 +worldOffsetZ);
-                coords[coordIndex + 0] = ponto05.x;
+                coords[coordIndex] = ponto05.x;
                 coords[coordIndex + 1] = ponto05.y;
                 coords[coordIndex + 2] = ponto05.z;
-                norms[coordIndex + 0 ] = 0;
+                norms[coordIndex] = 0;
                 norms[coordIndex + 1 ] = 1;
                 norms[coordIndex + 2 ] = 0;
                 indexes[pointId] = pointId;
@@ -117,19 +222,21 @@ public class Terrain {
                 xyMap.add(new Pair<Integer, Integer>(x+1,y+1));
 
                 SimpleVector ponto06 = new SimpleVector(x+1+ worldOffsetX,heightValues[x+1][y], y+worldOffsetZ);
-                coords[coordIndex + 0] = ponto06.x;
+                coords[coordIndex] = ponto06.x;
                 coords[coordIndex + 1] = ponto06.y;
                 coords[coordIndex + 2] = ponto06.z;
-                norms[coordIndex + 0 ] = 0;
+                norms[coordIndex] = 0;
                 norms[coordIndex + 1 ] = 1;
                 norms[coordIndex + 2 ] = 0;
                 indexes[pointId] = pointId;
                 pointId++;
                 coordIndex = coordIndex + 3;
                 xyMap.add(new Pair<Integer, Integer>(x+1,y));
+
             }
         }
-
+        long t1BuildVertex = System.currentTimeMillis();
+        Log.d("TEMPO_PASSAGEM_GEO", (t1BuildVertex - tBuildVertex)+"");
         for(int i=0; i<xyMap.size(); i++){
             Pair<Integer, Integer> currentXY = xyMap.get(i);
             Pair<Integer, Integer> north = new Pair<>(currentXY.first, currentXY.second-1);
@@ -137,37 +244,65 @@ public class Terrain {
             Pair<Integer, Integer> east = new Pair<>(currentXY.first-1, currentXY.second);
             Pair<Integer, Integer> west = new Pair<>(currentXY.first+1, currentXY.second);
 
+            List<Integer> currList = tablePosIndex.get(currentXY);
+            int currId = currList.get(0);
             //Pega as coordenadas
             SimpleVector pNorth, pSouth, pEast, pWest;
             try {
-                int idNorth = xyMap.indexOf(north);
-                pNorth = idNorth == -1 ? new SimpleVector(coords[i * 3 + 0], coords[i * 3 + 1], coords[i * 3 + 2] - 1) :
-                        new SimpleVector(coords[idNorth * 3 + 0], coords[idNorth * 3 + 1], coords[idNorth * 3 + 2]);
-            }catch (ArrayIndexOutOfBoundsException ex){
+                //usa a tabela
+                List<Integer> lstIndexes =  tablePosIndex.get(north);
+                if(lstIndexes==null){
+                    SimpleVector v = tableVertexData.get(currId).coord;
+                    pNorth = new SimpleVector(v.x,  v.y, v.z-1);
+                }else{
+                    SimpleVector v = tableVertexData.get(lstIndexes.get(0)).coord;
+                    pNorth = new SimpleVector(v.x,  v.y, v.z);
+                }
+            }catch (Exception ex){
+                Log.e("erro", currentXY.toString());
+                throw ex;
+            }
+
+            try {
+                //usa a tabela
+                List<Integer> lstIndexes =  tablePosIndex.get(south);
+                if(lstIndexes==null){
+                    SimpleVector v = tableVertexData.get(currId).coord;
+                    pSouth = new SimpleVector(v.x,  v.y, v.z+1);
+                }else{
+                    SimpleVector v = tableVertexData.get(lstIndexes.get(0)).coord;
+                    pSouth = new SimpleVector(v.x,  v.y, v.z);
+                }
+            }catch (Exception ex){
                 Log.e("erro", currentXY.toString());
                 throw ex;
             }
             try {
-                int idSouth = xyMap.indexOf(south);
-                pSouth = idSouth == -1 ? new SimpleVector(coords[i * 3 + 0], coords[i * 3 + 1], coords[i * 3 + 2] + 1) :
-                        new SimpleVector(coords[idSouth * 3 + 0], coords[idSouth * 3 + 1], coords[idSouth * 3 + 2]);
-            }catch (ArrayIndexOutOfBoundsException ex){
+                //usa a tabela
+                List<Integer> lstIndexes =  tablePosIndex.get(east);
+                if(lstIndexes==null){
+                    SimpleVector v = tableVertexData.get(currId).coord;
+                    pEast = new SimpleVector(v.x-1,  v.y, v.z);
+                }else{
+                    SimpleVector v = tableVertexData.get(lstIndexes.get(0)).coord;
+                    pEast = new SimpleVector(v.x,  v.y, v.z);
+                }
+            }catch (Exception ex){
                 Log.e("erro", currentXY.toString());
                 throw ex;
             }
+
             try {
-                int idEast = xyMap.indexOf(east);
-                pEast = idEast == -1 ? new SimpleVector(coords[i * 3 + 0] - 1, coords[i * 3 + 1], coords[i * 3 + 2]) :
-                        new SimpleVector(coords[idEast * 3 + 0], coords[idEast * 3 + 1], coords[idEast * 3 + 2]);
-            }catch (ArrayIndexOutOfBoundsException ex){
-                Log.e("erro", currentXY.toString());
-                throw ex;
-            }
-            try {
-                int idWest = xyMap.indexOf(west);
-                pWest = idWest == -1 ? new SimpleVector(coords[i * 3 + 0] + 1, coords[i * 3 + 1], coords[i * 3 + 2]) :
-                        new SimpleVector(coords[idWest * 3 + 0], coords[idWest * 3 + 1], coords[idWest * 3 + 2]);
-            }catch (ArrayIndexOutOfBoundsException ex){
+                //usa a tabela
+                List<Integer> lstIndexes =  tablePosIndex.get(west);
+                if(lstIndexes==null){
+                    SimpleVector v = tableVertexData.get(currId).coord;
+                    pWest = new SimpleVector(v.x+1,  v.y, v.z);
+                }else{
+                    SimpleVector v = tableVertexData.get(lstIndexes.get(0)).coord;
+                    pWest = new SimpleVector(v.x,  v.y, v.z);
+                }
+            }catch (Exception ex){
                 Log.e("erro", currentXY.toString());
                 throw ex;
             }
@@ -185,22 +320,6 @@ public class Terrain {
         }
         Log.d("simcity","passou?");
 
-//        //percorre o heightmap criando as faces.
-//        for(int y=0; y<bmpAltura-1; y++){
-//            for(int x=0; x<bmpLargura-1; x++){
-//                //Triangulo 01
-//                SimpleVector ponto01 = new SimpleVector(x + worldOffsetX,heightValues[x][y], y+worldOffsetZ );
-//                SimpleVector ponto02 = new SimpleVector(x+ worldOffsetX,heightValues[x][y+1], y+1+worldOffsetZ);
-//                SimpleVector ponto03 = new SimpleVector(x+1+ worldOffsetX,heightValues[x+1][y], y +worldOffsetZ);
-//                //Triangulo 02
-//                SimpleVector ponto04 = new SimpleVector(x+ worldOffsetX,heightValues[x][y+1], y+1+worldOffsetZ);
-//                SimpleVector ponto05 = new SimpleVector(x+1+ worldOffsetX,heightValues[x+1][y+1], y+1 +worldOffsetZ);
-//                SimpleVector ponto06 = new SimpleVector(x+1+ worldOffsetX,heightValues[x+1][y], y+worldOffsetZ);
-//                //Adiciona à superficie
-//                superficie.addTriangle(ponto01,0,0, ponto02,0,1, ponto03,1,0);
-//                superficie.addTriangle(ponto04,0,1, ponto05,1,1, ponto06,1,0);
-//            }
-//        }
         superficie = new Object3D(coords,norms,uvs,indexes, TextureManager.TEXTURE_NOTFOUND);
         long t1 = System.currentTimeMillis();
         Log.d("TEMPO_PASSAGEM_GEO", (t1-t0)+" ms");
