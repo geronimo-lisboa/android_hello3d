@@ -3,6 +3,7 @@ package dongeronimo.com.testejpct;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.util.Pair;
 
 import com.threed.jpct.GLSLShader;
 import com.threed.jpct.Loader;
@@ -10,6 +11,9 @@ import com.threed.jpct.Matrix;
 import com.threed.jpct.Object3D;
 import com.threed.jpct.SimpleVector;
 import com.threed.jpct.TextureManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * O terreno gerado a partir de um heightmap. A partir de um bitmap passado pro construtor constrói
@@ -43,6 +47,7 @@ public class Terrain {
         float norms[] = new float[numeroDeTriangulos * 9];
         int indexes[] = new int[numeroDeTriangulos * 3];
         float uvs[] = new float[numeroDeTriangulos * 6];
+        List<Pair<Integer, Integer>> xyMap = new ArrayList<>();
         for(int i=0; i<uvs.length;i++)
             uvs[i] = 0.0f;
         int coordIndex = 0;
@@ -60,6 +65,7 @@ public class Terrain {
                 indexes[pointId] = pointId;
                 pointId++;
                 coordIndex = coordIndex + 3;
+                xyMap.add(new Pair<Integer, Integer>(x,y));
 
                 SimpleVector ponto02 = new SimpleVector(x+ worldOffsetX,heightValues[x][y+1], y+1+worldOffsetZ);
                 coords[coordIndex + 0] = ponto02.x;
@@ -71,6 +77,7 @@ public class Terrain {
                 indexes[pointId] = pointId;
                 pointId++;
                 coordIndex = coordIndex + 3;
+                xyMap.add(new Pair<Integer, Integer>(x,y+1));
 
                 SimpleVector ponto03 = new SimpleVector(x+1+ worldOffsetX,heightValues[x+1][y], y +worldOffsetZ);
                 coords[coordIndex + 0] = ponto03.x;
@@ -82,6 +89,7 @@ public class Terrain {
                 indexes[pointId] = pointId;
                 pointId++;
                 coordIndex = coordIndex + 3;
+                xyMap.add(new Pair<Integer, Integer>(x+1,y));
 
                 //Triangulo 02
                 SimpleVector ponto04 = new SimpleVector(x+ worldOffsetX,heightValues[x][y+1], y+1+worldOffsetZ);
@@ -94,6 +102,7 @@ public class Terrain {
                 indexes[pointId] = pointId;
                 pointId++;
                 coordIndex = coordIndex + 3;
+                xyMap.add(new Pair<Integer, Integer>(x,y+1));
 
                 SimpleVector ponto05 = new SimpleVector(x+1+ worldOffsetX,heightValues[x+1][y+1], y+1 +worldOffsetZ);
                 coords[coordIndex + 0] = ponto05.x;
@@ -105,6 +114,7 @@ public class Terrain {
                 indexes[pointId] = pointId;
                 pointId++;
                 coordIndex = coordIndex + 3;
+                xyMap.add(new Pair<Integer, Integer>(x+1,y+1));
 
                 SimpleVector ponto06 = new SimpleVector(x+1+ worldOffsetX,heightValues[x+1][y], y+worldOffsetZ);
                 coords[coordIndex + 0] = ponto06.x;
@@ -116,9 +126,60 @@ public class Terrain {
                 indexes[pointId] = pointId;
                 pointId++;
                 coordIndex = coordIndex + 3;
+                xyMap.add(new Pair<Integer, Integer>(x+1,y));
             }
         }
 
+        for(int i=0; i<xyMap.size(); i++){
+            Pair<Integer, Integer> currentXY = xyMap.get(i);
+            Pair<Integer, Integer> north = new Pair<>(currentXY.first, currentXY.second-1);
+            Pair<Integer, Integer> south = new Pair<>(currentXY.first, currentXY.second+1);
+            Pair<Integer, Integer> east = new Pair<>(currentXY.first-1, currentXY.second);
+            Pair<Integer, Integer> west = new Pair<>(currentXY.first+1, currentXY.second);
+
+            //Pega as coordenadas
+            try {
+                int idNorth = xyMap.indexOf(north);
+                SimpleVector pNorth = idNorth == -1 ? new SimpleVector(coords[i * 3 + 0], coords[i * 3 + 1], coords[i * 3 + 2] - 1) :
+                        new SimpleVector(coords[idNorth * 3 + 0], coords[idNorth * 3 + 1], coords[idNorth * 3 + 2]);
+            }catch (ArrayIndexOutOfBoundsException ex){
+                Log.e("erro", currentXY.toString());
+                throw ex;
+            }
+            try {
+                int idSouth = xyMap.indexOf(south);
+                SimpleVector pSouth = idSouth == -1 ? new SimpleVector(coords[i * 3 + 0], coords[i * 3 + 1], coords[i * 3 + 2] + 1) :
+                        new SimpleVector(coords[idSouth * 3 + 0], coords[idSouth * 3 + 1], coords[idSouth * 3 + 2]);
+            }catch (ArrayIndexOutOfBoundsException ex){
+                Log.e("erro", currentXY.toString());
+                throw ex;
+            }
+            try {
+                int idEast = xyMap.indexOf(east);
+                SimpleVector pEast = idEast == -1 ? new SimpleVector(coords[i * 3 + 0] - 1, coords[i * 3 + 1], coords[i * 3 + 2]) :
+                        new SimpleVector(coords[idEast * 3 + 0], coords[idEast * 3 + 1], coords[idEast * 3 + 2]);
+            }catch (ArrayIndexOutOfBoundsException ex){
+                Log.e("erro", currentXY.toString());
+                throw ex;
+            }
+            try {
+                int idWest = xyMap.indexOf(west);
+                SimpleVector pWest = idWest == -1 ? new SimpleVector(coords[i * 3 + 0] + 1, coords[i * 3 + 1], coords[i * 3 + 2]) :
+                        new SimpleVector(coords[idWest * 3 + 0], coords[idWest * 3 + 1], coords[idWest * 3 + 2]);
+            }catch (ArrayIndexOutOfBoundsException ex){
+                Log.e("erro", currentXY.toString());
+                throw ex;
+            }
+
+            //faz as contas
+            SimpleVector newNormal = new SimpleVector(0,1,0);
+            //...
+            //altera a matriz de normais
+            norms[i*3 + 0] = newNormal.x;
+            norms[i*3 + 1] = newNormal.y;
+            norms[i*3 + 2] = newNormal.z;
+        }
+        Log.d("simcity","passou?");
 
 //        //percorre o heightmap criando as faces.
 //        for(int y=0; y<bmpAltura-1; y++){
