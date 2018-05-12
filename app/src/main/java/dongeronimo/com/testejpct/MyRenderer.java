@@ -71,12 +71,12 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             BitmapFactory.Options heightmapLoadOption = new BitmapFactory.Options();
             heightmapLoadOption.inScaled = false;
             //A carga do bitmap propriamente dita é aqui,
-            Bitmap heightmapBmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.mapa_100, heightmapLoadOption);
+            Bitmap heightmapBmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.hm01, heightmapLoadOption);
             //Criação do terreno
             terrain = new Terrain(heightmapBmp, context);
             world.addObject(terrain.getSurface());
             //Cria a câmera
-            cameraHelper = new CameraHelper(world.getCamera(),  new SimpleVector(0,0,0),new SimpleVector(0,50,-60), 0, 0);
+            cameraHelper = new CameraHelper(world.getCamera(),  new SimpleVector(0,0,0),new SimpleVector(0,10,-10), 0, 0);
             cameraHelper.addShaderDataListener(new CameraHelper.ShaderDataListerner() {
                 @Override
                 public void apply(CameraHelper cameraHelper) {
