@@ -138,9 +138,10 @@ public class Terrain {
             Pair<Integer, Integer> west = new Pair<>(currentXY.first+1, currentXY.second);
 
             //Pega as coordenadas
+            SimpleVector pNorth, pSouth, pEast, pWest;
             try {
                 int idNorth = xyMap.indexOf(north);
-                SimpleVector pNorth = idNorth == -1 ? new SimpleVector(coords[i * 3 + 0], coords[i * 3 + 1], coords[i * 3 + 2] - 1) :
+                pNorth = idNorth == -1 ? new SimpleVector(coords[i * 3 + 0], coords[i * 3 + 1], coords[i * 3 + 2] - 1) :
                         new SimpleVector(coords[idNorth * 3 + 0], coords[idNorth * 3 + 1], coords[idNorth * 3 + 2]);
             }catch (ArrayIndexOutOfBoundsException ex){
                 Log.e("erro", currentXY.toString());
@@ -148,7 +149,7 @@ public class Terrain {
             }
             try {
                 int idSouth = xyMap.indexOf(south);
-                SimpleVector pSouth = idSouth == -1 ? new SimpleVector(coords[i * 3 + 0], coords[i * 3 + 1], coords[i * 3 + 2] + 1) :
+                pSouth = idSouth == -1 ? new SimpleVector(coords[i * 3 + 0], coords[i * 3 + 1], coords[i * 3 + 2] + 1) :
                         new SimpleVector(coords[idSouth * 3 + 0], coords[idSouth * 3 + 1], coords[idSouth * 3 + 2]);
             }catch (ArrayIndexOutOfBoundsException ex){
                 Log.e("erro", currentXY.toString());
@@ -156,7 +157,7 @@ public class Terrain {
             }
             try {
                 int idEast = xyMap.indexOf(east);
-                SimpleVector pEast = idEast == -1 ? new SimpleVector(coords[i * 3 + 0] - 1, coords[i * 3 + 1], coords[i * 3 + 2]) :
+                pEast = idEast == -1 ? new SimpleVector(coords[i * 3 + 0] - 1, coords[i * 3 + 1], coords[i * 3 + 2]) :
                         new SimpleVector(coords[idEast * 3 + 0], coords[idEast * 3 + 1], coords[idEast * 3 + 2]);
             }catch (ArrayIndexOutOfBoundsException ex){
                 Log.e("erro", currentXY.toString());
@@ -164,15 +165,18 @@ public class Terrain {
             }
             try {
                 int idWest = xyMap.indexOf(west);
-                SimpleVector pWest = idWest == -1 ? new SimpleVector(coords[i * 3 + 0] + 1, coords[i * 3 + 1], coords[i * 3 + 2]) :
+                pWest = idWest == -1 ? new SimpleVector(coords[i * 3 + 0] + 1, coords[i * 3 + 1], coords[i * 3 + 2]) :
                         new SimpleVector(coords[idWest * 3 + 0], coords[idWest * 3 + 1], coords[idWest * 3 + 2]);
             }catch (ArrayIndexOutOfBoundsException ex){
                 Log.e("erro", currentXY.toString());
                 throw ex;
             }
-
             //faz as contas
-            SimpleVector newNormal = new SimpleVector(0,1,0);
+            SimpleVector U = pWest.calcSub(pEast);
+            U.normalize();
+            SimpleVector V = pSouth.calcSub(pNorth);
+            V.normalize();
+            SimpleVector newNormal = V.calcCross(U);
             //...
             //altera a matriz de normais
             norms[i*3 + 0] = newNormal.x;
