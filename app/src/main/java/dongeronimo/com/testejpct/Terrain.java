@@ -352,6 +352,10 @@ public class Terrain {
         shader.setUniform("cameraPosition", cp);
     }
 
+    public void setSeaLevel(float seaLevel){
+        shader.setUniform("seaLevel", seaLevel);
+    }
+
     public Terrain(Bitmap heightmapBmp, Context ctx){
         this.context = ctx;
         //Passagem dos dados do bitmap pra matrix do heightmap.

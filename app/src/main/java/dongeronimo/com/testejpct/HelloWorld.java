@@ -83,6 +83,11 @@ public class HelloWorld extends Activity implements ScaleGestureDetector.OnScale
                 renderer.getTerrain().setTestLightPos(p);
             }
         });
+
+        Button btnApplySeaLevel = findViewById(R.id.btnAplicarSeaLevel);
+        btnApplySeaLevel.setOnClickListener((view)->{
+            renderer.getTerrain().setSeaLevel(Float.parseFloat(((TextView) findViewById(R.id.edtSeaLevel)).getText().toString()));
+        });
     }
     @Override
     protected void onPause(){
