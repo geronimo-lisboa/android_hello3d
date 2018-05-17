@@ -18,10 +18,15 @@ vec3 evalShadingByInclination(vec3 normal){
 
 vec3 evalShadingByHeight(vec3 worldPosition, vec3 currentColor){
     float height = worldPosition.y;
-    if(height < seaLevel){
+    if(height < seaLevel - 0.05){
         currentColor.b = 1.0;
         return normalize(currentColor);
-    }else{
+    }
+    else if(height < seaLevel + 0.05){
+        currentColor = vec3(0.9,0.9, 0.5);
+        return currentColor;
+    }
+    else{
         return currentColor;
     }
 }
