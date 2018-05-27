@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView;
+import android.util.DebugUtils;
 import android.util.Log;
 
 import com.threed.jpct.FrameBuffer;
@@ -16,22 +17,21 @@ import com.threed.jpct.util.MemoryHelper;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import dongeronimo.com.testejpct.model.Mundo;
+
 /**
  * Implementação do renderer. É usado pela HelloWorld (no glView que tem lá)*/
 public class MyRenderer implements GLSurfaceView.Renderer {
     private GL10 lastGl = null;
     private FrameBuffer fb = null;
-    private World world = null;
-    private Light sun = null;
+    private Mundo mundo;
+    //private World world = null;
+    //private Light sun = null;
     //Além de guardar a câmera do world serve pra encapsular um monte de operações e deve ser o meio
     //preferido de operar com a câmera.
     private CameraHelper cameraHelper;
-
     private Context context;
-
-    private Terrain terrain;
-
-
+    //private Terrain terrain;
     public void setTouchTurn(float v){
         cameraHelper.addHorizontalRotation(v);
     }
@@ -47,6 +47,26 @@ public class MyRenderer implements GLSurfaceView.Renderer {
         return context;
     }
 
+    public void setMundo(Mundo m){
+        this.mundo = m;
+    }
+
+    public void createCamera(){
+        //Cria a câmera
+        cameraHelper = new CameraHelper(mundo.getWorldObject().getCamera(),
+                new SimpleVector(0,0,0),
+                new SimpleVector(0,50,-50),
+                0, 0);
+        cameraHelper.addShaderDataListener(new CameraHelper.ShaderDataListerner() {
+            @Override
+            public void apply(CameraHelper cameraHelper) {
+                Log.d("Simcity", "Nao implementado");
+                //Passa a posição da câmera pro shader
+                //terrain.setCameraPosition(cameraHelper.getCameraPosition());
+            }
+        });
+    }
+
     @Override
     public void onSurfaceChanged(GL10 gl10, int w, int h) {
         //Atualização/criação do framebuffer
@@ -58,12 +78,13 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             fb = new FrameBuffer(w, h);//Cria o framebuffer
             fb.setVirtualDimensions(fb.getWidth(), fb.getHeight());
             lastGl = gl10;
-        }else{//Não precisa recriar o framebuffer, só redimensionar
+        }
+        else{//Não precisa recriar o framebuffer, só redimensionar
             fb.resize(w,h);
             fb.setVirtualDimensions(w,h);
         }
         //criação do mundo se ele não tiver sido criado
-        if(world==null){
+//        if(world==null){
 //            world = new World();
 //            world.setAmbientLight(20,20,20);
 //            sun = new Light(world);
@@ -96,7 +117,7 @@ public class MyRenderer implements GLSurfaceView.Renderer {
 //            sv.z += 0;
 //            sun.setPosition(sv);
 //            MemoryHelper.compact();
-        }
+//        }
     }
 
     @Override
@@ -113,6 +134,7 @@ public class MyRenderer implements GLSurfaceView.Renderer {
 
         // Draw the main screen
         fb.clear(RGBColor.GREEN);
+        mundo.render(fb);
 //        world.renderScene(fb);
 //        world.draw(fb);
         fb.display();
@@ -142,9 +164,5 @@ public class MyRenderer implements GLSurfaceView.Renderer {
 
     public void resetCamera() {
 //        cameraHelper.reset();
-    }
-
-    public Terrain getTerrain() {
-        return terrain;
     }
 }

@@ -35,6 +35,7 @@ public class Terreno {
 
     public Terreno(Bitmap heightmap, Mundo mundo, float seaLevel){
         this.seaLevel = seaLevel;
+        this.mundo = mundo;
         heightmapBitmap = heightmap;
         //Passagem dos dados do bitmap pra matrix do heightmap.
         bmpLargura = heightmapBitmap.getWidth();

@@ -46,9 +46,10 @@ public class HelloWorld extends Activity implements ScaleGestureDetector.OnScale
         //Cria o mundo
         BitmapFactory.Options heightmapLoadOption = new BitmapFactory.Options();
         heightmapLoadOption.inScaled = false;
-        Bitmap heightmap = BitmapFactory.decodeResource(getResources(), R.drawable.mapa_100, heightmapLoadOption);
+        Bitmap heightmap = BitmapFactory.decodeResource(getResources(), R.drawable.hm01, heightmapLoadOption);
         mundo = new Mundo(renderer, heightmap, 1.5f, 12);//o mundo é criado aqui
-
+        renderer.setMundo(mundo);
+        renderer.createCamera();
         gestureDec = new ScaleGestureDetector(this.getApplicationContext(), this);
         //Seta os handlers
         Button btnResetCam = findViewById(R.id.btnResetCam);
@@ -88,7 +89,7 @@ public class HelloWorld extends Activity implements ScaleGestureDetector.OnScale
                 final float y = Float.parseFloat(edtY.getText().toString());
                 final float z = Float.parseFloat(edtZ.getText().toString());
                 SimpleVector p = new SimpleVector(x,y,z);
-                renderer.getTerrain().setTestLightPos(p);
+                //renderer.getTerrain().setTestLightPos(p);
             }
         });
 
@@ -96,7 +97,7 @@ public class HelloWorld extends Activity implements ScaleGestureDetector.OnScale
         btnApplySeaLevel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                renderer.getTerrain().setSeaLevel(Float.parseFloat(((TextView) findViewById(R.id.edtSeaLevel)).getText().toString()));
+                //renderer.getTerrain().setSeaLevel(Float.parseFloat(((TextView) findViewById(R.id.edtSeaLevel)).getText().toString()));
             }
         });
 
