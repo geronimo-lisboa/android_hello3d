@@ -1,4 +1,4 @@
 package dongeronimo.com.testejpct.model;
 
-public class Skybox {
+public class Rio {
 }

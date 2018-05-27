@@ -1,6 +1,8 @@
 package dongeronimo.com.testejpct;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -12,6 +14,8 @@ import android.widget.TextView;
 
 import com.threed.jpct.SimpleVector;
 
+import dongeronimo.com.testejpct.model.Mundo;
+
 /**
  * Essa tela mostra a cena 3d. No momento seu layout é construído manualmente, ignorando o arquivo
  * de layout.
@@ -20,6 +24,7 @@ public class HelloWorld extends Activity implements ScaleGestureDetector.OnScale
     private GLSurfaceView glView;
     private MyRenderer renderer;
     private ScaleGestureDetector gestureDec;
+    private Mundo mundo;
     private float scale;
     private float xpos = -1;
     private float ypos = -1;
@@ -38,9 +43,12 @@ public class HelloWorld extends Activity implements ScaleGestureDetector.OnScale
         //Cria o renderer e o põe na surface view
         renderer = new MyRenderer(getApplication());
         glView.setRenderer(renderer);
-        //Põe a surface view na tela
-        //setContentView(glView);
-        //setContentView(R.layout.activity_hello_world);//não vai ser usado nesse momento.
+        //Cria o mundo
+        BitmapFactory.Options heightmapLoadOption = new BitmapFactory.Options();
+        heightmapLoadOption.inScaled = false;
+        Bitmap heightmap = BitmapFactory.decodeResource(getResources(), R.drawable.mapa_100, heightmapLoadOption);
+        mundo = new Mundo(renderer, heightmap, 1.5f, 12);//o mundo é criado aqui
+
         gestureDec = new ScaleGestureDetector(this.getApplicationContext(), this);
         //Seta os handlers
         Button btnResetCam = findViewById(R.id.btnResetCam);

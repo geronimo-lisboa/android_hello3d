@@ -43,6 +43,10 @@ public class MyRenderer implements GLSurfaceView.Renderer {
         this.context = ctx;
     }
 
+    public Context getContext(){
+        return context;
+    }
+
     @Override
     public void onSurfaceChanged(GL10 gl10, int w, int h) {
         //Atualização/criação do framebuffer
@@ -60,38 +64,38 @@ public class MyRenderer implements GLSurfaceView.Renderer {
         }
         //criação do mundo se ele não tiver sido criado
         if(world==null){
-            world = new World();
-            world.setAmbientLight(20,20,20);
-            sun = new Light(world);
-            sun.setIntensity(250,250,250);
-
-            ///Pega o bitmap do terreno e gera os dados pro heightmap
-            //Isso aqui é necessário para que o android não escale meu bitmap com o tamanho de tela quando
-            //carregá-lo (comportamento padrão), uma vez que eu preciso do bitmap como ele é.
-            BitmapFactory.Options heightmapLoadOption = new BitmapFactory.Options();
-            heightmapLoadOption.inScaled = false;
-            //A carga do bitmap propriamente dita é aqui,
-            Bitmap heightmapBmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.mapa_100, heightmapLoadOption);
-            //Criação do terreno
-            terrain = new Terrain(heightmapBmp, context);
-            world.addObject(terrain.getSurface());
-            //Cria a câmera
-            cameraHelper = new CameraHelper(world.getCamera(),  new SimpleVector(0,0,0),new SimpleVector(0,50,-50), 0, 0);
-            cameraHelper.addShaderDataListener(new CameraHelper.ShaderDataListerner() {
-                @Override
-                public void apply(CameraHelper cameraHelper) {
-                    //Passa a posição da câmera pro shader
-                    terrain.setCameraPosition(cameraHelper.getCameraPosition());
-                }
-            });
-            //Seta a posição do sol
-            SimpleVector sv = new SimpleVector();
-            sv.set(SimpleVector.ORIGIN);
-            sv.x += 0;
-            sv.y += 500;
-            sv.z += 0;
-            sun.setPosition(sv);
-            MemoryHelper.compact();
+//            world = new World();
+//            world.setAmbientLight(20,20,20);
+//            sun = new Light(world);
+//            sun.setIntensity(250,250,250);
+//
+//            ///Pega o bitmap do terreno e gera os dados pro heightmap
+//            //Isso aqui é necessário para que o android não escale meu bitmap com o tamanho de tela quando
+//            //carregá-lo (comportamento padrão), uma vez que eu preciso do bitmap como ele é.
+//            BitmapFactory.Options heightmapLoadOption = new BitmapFactory.Options();
+//            heightmapLoadOption.inScaled = false;
+//            //A carga do bitmap propriamente dita é aqui,
+//            Bitmap heightmapBmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.mapa_100, heightmapLoadOption);
+//            //Criação do terreno
+//            terrain = new Terrain(heightmapBmp, context);
+//            world.addObject(terrain.getSurface());
+//            //Cria a câmera
+//            cameraHelper = new CameraHelper(world.getCamera(),  new SimpleVector(0,0,0),new SimpleVector(0,50,-50), 0, 0);
+//            cameraHelper.addShaderDataListener(new CameraHelper.ShaderDataListerner() {
+//                @Override
+//                public void apply(CameraHelper cameraHelper) {
+//                    //Passa a posição da câmera pro shader
+//                    terrain.setCameraPosition(cameraHelper.getCameraPosition());
+//                }
+//            });
+//            //Seta a posição do sol
+//            SimpleVector sv = new SimpleVector();
+//            sv.set(SimpleVector.ORIGIN);
+//            sv.x += 0;
+//            sv.y += 500;
+//            sv.z += 0;
+//            sun.setPosition(sv);
+//            MemoryHelper.compact();
         }
     }
 
@@ -105,12 +109,12 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl10) {
         //Atualiza a câmera
-        cameraHelper.update();
+//        cameraHelper.update();
 
         // Draw the main screen
         fb.clear(RGBColor.GREEN);
-        world.renderScene(fb);
-        world.draw(fb);
+//        world.renderScene(fb);
+//        world.draw(fb);
         fb.display();
 
         if (System.currentTimeMillis() - time >= 1000) {
@@ -122,22 +126,22 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     }
 
     public void incrementCameraZ() {
-        cameraHelper.moveFoward();
+//        cameraHelper.moveFoward();
     }
 
     public void decrementCameraZ() {
-        cameraHelper.moveBackward();
+//        cameraHelper.moveBackward();
     }
     public void decrementCameraX() {
-        cameraHelper.moveLeft();
+//        cameraHelper.moveLeft();
     }
 
     public void incrementCameraX() {
-        cameraHelper.moveRight();
+//        cameraHelper.moveRight();
     }
 
     public void resetCamera() {
-        cameraHelper.reset();
+//        cameraHelper.reset();
     }
 
     public Terrain getTerrain() {
