@@ -55,6 +55,7 @@ public class Terreno {
         gradientCalculator = new GradientCalculator(heightValues);
         //Agora é hora de construir o terreno
         buildTerrain();
+        mundo.getWorldObject().addObject(superficie);
     }
     /**É nesse método que a geometria do terreno é montada. Esse método é uma abominação e
      * um dia terá que ser refatorado.*/

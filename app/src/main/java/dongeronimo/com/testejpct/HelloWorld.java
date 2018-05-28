@@ -46,7 +46,7 @@ public class HelloWorld extends Activity implements ScaleGestureDetector.OnScale
         //Cria o mundo
         BitmapFactory.Options heightmapLoadOption = new BitmapFactory.Options();
         heightmapLoadOption.inScaled = false;
-        Bitmap heightmap = BitmapFactory.decodeResource(getResources(), R.drawable.hm01, heightmapLoadOption);
+        Bitmap heightmap = BitmapFactory.decodeResource(getResources(), R.drawable.mapa_100, heightmapLoadOption);
         mundo = new Mundo(renderer, heightmap, 1.5f, 12);//o mundo é criado aqui
         renderer.setMundo(mundo);
         renderer.createCamera();
