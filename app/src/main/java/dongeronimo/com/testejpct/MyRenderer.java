@@ -62,6 +62,7 @@ public class MyRenderer implements GLSurfaceView.Renderer {
             public void apply(CameraHelper cameraHelper) {
                 Log.d("Simcity", "Nao implementado");
                 //Passa a posição da câmera pro shader
+                mundo.setCameraPosition(cameraHelper.getCameraPosition());
                 //terrain.setCameraPosition(cameraHelper.getCameraPosition());
             }
         });
@@ -134,6 +135,7 @@ public class MyRenderer implements GLSurfaceView.Renderer {
 
         // Draw the main screen
         fb.clear(RGBColor.GREEN);
+        cameraHelper.update();
         mundo.render(fb);
 //        world.renderScene(fb);
 //        world.draw(fb);

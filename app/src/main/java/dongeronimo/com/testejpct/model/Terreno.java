@@ -18,7 +18,7 @@ import java.util.List;
 import dongeronimo.com.testejpct.GradientCalculator;
 import dongeronimo.com.testejpct.R;
 
-public class Terreno {
+public class Terreno implements IRenderable{
     private List<Rio> rios;
     private List<Arvore> arvores;
     private List<Construcao> construcoes;
@@ -373,5 +373,10 @@ public class Terreno {
         tRot.matMul(tTrans);
         shader.setUniform("modelMatrix", tRot);
         superficie.setShader(shader);
+    }
+
+    @Override
+    public void setCameraPosition(SimpleVector p) {
+        this.shader.setUniform("cameraPosition", p);
     }
 }

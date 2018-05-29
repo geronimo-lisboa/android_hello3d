@@ -4,19 +4,23 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.threed.jpct.FrameBuffer;
+import com.threed.jpct.SimpleVector;
 import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.MemoryHandler;
 
 import dongeronimo.com.testejpct.MyRenderer;
 
 
-public class Mundo {
+public class Mundo implements IRenderable{
     private Ceu ceu;
     private Mar mar;
     private Terreno terreno;
     private float seaLevel;
+    private List<IRenderable> renderables = new LinkedList<>();
     //Low level
     private World world;
     private MyRenderer renderer;
@@ -44,5 +48,11 @@ public class Mundo {
     public void render(FrameBuffer fb){
         world.renderScene(fb);
         world.draw(fb);
+    }
+    /**
+     * Informa a posição da câmera no espaço para cara renderable. Alguns podem precisar dessa informação*/
+    public void setCameraPosition(SimpleVector cameraPosition) {
+        for(IRenderable r:renderables)
+            r.setCameraPosition(cameraPosition);
     }
 }
