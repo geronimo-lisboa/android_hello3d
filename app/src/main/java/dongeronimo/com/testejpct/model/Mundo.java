@@ -2,6 +2,7 @@ package dongeronimo.com.testejpct.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.SimpleVector;
@@ -15,12 +16,13 @@ import java.util.logging.MemoryHandler;
 import dongeronimo.com.testejpct.MyRenderer;
 
 
-public class Mundo implements IRenderable{
+public class Mundo implements IRenderable, IUpdatable{
     private Ceu ceu;
     private Mar mar;
     private Terreno terreno;
     private float seaLevel;
-    private List<IRenderable> renderables = new LinkedList<>();
+
+
     //Low level
     private World world;
     private MyRenderer renderer;
@@ -46,13 +48,21 @@ public class Mundo implements IRenderable{
     }
 
     public void render(FrameBuffer fb){
+        terreno.setSun(ceu.getSol());
         world.renderScene(fb);
         world.draw(fb);
     }
     /**
      * Informa a posição da câmera no espaço para cara renderable. Alguns podem precisar dessa informação*/
     public void setCameraPosition(SimpleVector cameraPosition) {
-        for(IRenderable r:renderables)
-            r.setCameraPosition(cameraPosition);
+        terreno.setCameraPosition(cameraPosition);
+    }
+    private long elapsedTime = System.currentTimeMillis();
+
+    @Override
+    public void avancarTempo(long deltaTime) {
+        Log.d("SIMCITY", "delta time = "+deltaTime);
+        ceu.avancarTempo(deltaTime);
+        elapsedTime += deltaTime;
     }
 }

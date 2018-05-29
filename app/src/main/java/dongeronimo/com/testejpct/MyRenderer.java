@@ -60,7 +60,6 @@ public class MyRenderer implements GLSurfaceView.Renderer {
         cameraHelper.addShaderDataListener(new CameraHelper.ShaderDataListerner() {
             @Override
             public void apply(CameraHelper cameraHelper) {
-                Log.d("Simcity", "Nao implementado");
                 //Passa a posição da câmera pro shader
                 mundo.setCameraPosition(cameraHelper.getCameraPosition());
                 //terrain.setCameraPosition(cameraHelper.getCameraPosition());
@@ -130,15 +129,12 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     float xR = 0;
     @Override
     public void onDrawFrame(GL10 gl10) {
-        //Atualiza a câmera
-//        cameraHelper.update();
-
         // Draw the main screen
         fb.clear(RGBColor.GREEN);
         cameraHelper.update();
+        long t = System.currentTimeMillis();
+        mundo.avancarTempo(t - time);//Avança o tempo;
         mundo.render(fb);
-//        world.renderScene(fb);
-//        world.draw(fb);
         fb.display();
 
         if (System.currentTimeMillis() - time >= 1000) {

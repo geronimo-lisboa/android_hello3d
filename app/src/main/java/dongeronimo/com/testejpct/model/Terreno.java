@@ -18,7 +18,7 @@ import java.util.List;
 import dongeronimo.com.testejpct.GradientCalculator;
 import dongeronimo.com.testejpct.R;
 
-public class Terreno implements IRenderable{
+public class Terreno implements IRenderable, IIlluminable{
     private List<Rio> rios;
     private List<Arvore> arvores;
     private List<Construcao> construcoes;
@@ -378,5 +378,10 @@ public class Terreno implements IRenderable{
     @Override
     public void setCameraPosition(SimpleVector p) {
         this.shader.setUniform("cameraPosition", p);
+    }
+
+    @Override
+    public void setSun(Sol s) {
+        this.shader.setUniform("testLightPos", s.getPosicao());
     }
 }

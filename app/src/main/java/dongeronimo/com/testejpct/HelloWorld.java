@@ -56,7 +56,8 @@ public class HelloWorld extends Activity implements ScaleGestureDetector.OnScale
         btnResetCam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                renderer.resetCamera();
+               // mundo.avancarTempo();
+                //renderer.resetCamera();
             }
         });
         final TextView edtX = findViewById(R.id.edtLightX);
