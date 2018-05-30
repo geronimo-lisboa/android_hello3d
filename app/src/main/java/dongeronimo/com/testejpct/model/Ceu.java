@@ -14,8 +14,8 @@ public class Ceu implements IUpdatable{
     }
 
     @Override
-    public void avancarTempo(long deltaTime) {
-        sol.avancarTempo(deltaTime);
+    public void avancarTempo() {
+        sol.avancarTempo();
     }
 
     public Sol getSol() {

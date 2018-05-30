@@ -1,5 +1,7 @@
 package dongeronimo.com.testejpct.model;
 
+
+
 import android.util.Log;
 
 import com.threed.jpct.Light;
@@ -8,17 +10,33 @@ import com.threed.jpct.SimpleVector;
 public class Sol implements IUpdatable {
     private Mundo mundo;
     private long currentTime = 0;
-    private int horaToAddToTime;
+    private long minutes = 0;
+
     //Baixo nivel
     Light lightSource;
 
-    private void calculaPosicao(double hora){
+
+    private void calculaPosicao(long minutos){
         //6h é 0, 12 é 90, 18 é 180, 24 é 270
-        double angle = hora * 15 - 90;
-        double x = Math.cos(angle) * 100;
-        double y = Math.sin(angle) * 100;
+        double angleInDegs = minutos / 4;//   elapsedTimeInMs/1000.0f * 15;
+        double x = Math.cos(Math.toRadians(angleInDegs)) * 1000;
+        double y = Math.sin(Math.toRadians(angleInDegs)) * 1000;
         lightSource.setPosition(new SimpleVector(x,y, 0));
-        Log.d("SIMCITY", "posicao do sol:"+x+", "+y);
+        setTint();
+    }
+    private void setTint(){
+        double angleInDegs = minutes / 4;
+        float r = (float) (Math.pow(Math.E, Math.sin(Math.toRadians(angleInDegs)))-1); //   Math.sin(Math.toRadians(angleInDegs));
+        float g = (float) Math.sin(Math.toRadians(angleInDegs));//Math.sin(Math.toRadians(angleInDegs));
+        float b = (float) (Math.sin(Math.toRadians(angleInDegs))/5); //0;
+
+        if(190 <angleInDegs && angleInDegs <350)
+        {
+            r = 0.05f;
+            g = 0.0f;
+            b = 0.12f;
+        }
+        lightSource.setIntensity(r,g,b);
     }
 
     public SimpleVector getPosicao(){
@@ -27,16 +45,15 @@ public class Sol implements IUpdatable {
 
     public Sol(int horaAtual, Mundo m){
         this.mundo = m;
-        horaToAddToTime = horaAtual * 1000;
         lightSource = new Light(m.getWorldObject());
         lightSource.setIntensity(255,255,255);
-        //calculaPosicao(hora);
+        minutes = 0;//horaAtual * 60;
+        calculaPosicao(minutes);
     }
 
     @Override
-    public void avancarTempo(long deltaTime) {
-        currentTime += deltaTime;//Isso está em milissegundos, cada segundo será 1h no meu tempo no momento.
-        float _hora = currentTime / 1000 + horaToAddToTime;
-        calculaPosicao(_hora);
+    public void avancarTempo() {
+        minutes += 2;
+        calculaPosicao(minutes);
     }
 }

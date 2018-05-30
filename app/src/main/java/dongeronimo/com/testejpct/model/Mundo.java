@@ -2,7 +2,7 @@ package dongeronimo.com.testejpct.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
+
 
 import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.SimpleVector;
@@ -21,7 +21,7 @@ public class Mundo implements IRenderable, IUpdatable{
     private Mar mar;
     private Terreno terreno;
     private float seaLevel;
-
+    private long elapsedTime;
 
     //Low level
     private World world;
@@ -57,12 +57,11 @@ public class Mundo implements IRenderable, IUpdatable{
     public void setCameraPosition(SimpleVector cameraPosition) {
         terreno.setCameraPosition(cameraPosition);
     }
-    private long elapsedTime = System.currentTimeMillis();
+
 
     @Override
-    public void avancarTempo(long deltaTime) {
-        Log.d("SIMCITY", "delta time = "+deltaTime);
-        ceu.avancarTempo(deltaTime);
-        elapsedTime += deltaTime;
+    public void avancarTempo() {
+        elapsedTime++;//avança o contador da simulação.
+        ceu.avancarTempo();
     }
 }

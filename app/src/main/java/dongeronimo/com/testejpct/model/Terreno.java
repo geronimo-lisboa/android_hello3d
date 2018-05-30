@@ -1,7 +1,7 @@
 package dongeronimo.com.testejpct.model;
 
 import android.graphics.Bitmap;
-import android.util.Log;
+
 import android.util.Pair;
 
 import com.threed.jpct.GLSLShader;
@@ -184,7 +184,7 @@ public class Terreno implements IRenderable, IIlluminable{
             }
         }//Essa tabela auxiliar está preenchida, com a chave sendo o index do vertice.
         long t1BuildVertData = System.currentTimeMillis();
-        Log.d("TEMPO_BUILD_TABLE", (t1BuildVertData-tBuildVertData)+"");
+
         //Montagem dos dados old school
         long tBuildVertex = System.currentTimeMillis();
         for(int y=0; y<bmpAltura-1; y++){
@@ -266,7 +266,7 @@ public class Terreno implements IRenderable, IIlluminable{
             }
         }
         long t1BuildVertex = System.currentTimeMillis();
-        Log.d("TEMPO_PASSAGEM_GEO", (t1BuildVertex - tBuildVertex)+"");
+
         for(int i=0; i<xyMap.size(); i++){
             Pair<Integer, Integer> currentXY = xyMap.get(i);
             Pair<Integer, Integer> north = new Pair<>(currentXY.first, currentXY.second-1);
@@ -289,7 +289,7 @@ public class Terreno implements IRenderable, IIlluminable{
                     pNorth = new SimpleVector(v.x,  v.y, v.z);
                 }
             }catch (Exception ex){
-                Log.e("erro", currentXY.toString());
+
                 throw ex;
             }
 
@@ -304,7 +304,7 @@ public class Terreno implements IRenderable, IIlluminable{
                     pSouth = new SimpleVector(v.x,  v.y, v.z);
                 }
             }catch (Exception ex){
-                Log.e("erro", currentXY.toString());
+
                 throw ex;
             }
             try {
@@ -318,7 +318,7 @@ public class Terreno implements IRenderable, IIlluminable{
                     pEast = new SimpleVector(v.x,  v.y, v.z);
                 }
             }catch (Exception ex){
-                Log.e("erro", currentXY.toString());
+
                 throw ex;
             }
 
@@ -333,7 +333,7 @@ public class Terreno implements IRenderable, IIlluminable{
                     pWest = new SimpleVector(v.x,  v.y, v.z);
                 }
             }catch (Exception ex){
-                Log.e("erro", currentXY.toString());
+
                 throw ex;
             }
             //faz as contas
@@ -348,10 +348,10 @@ public class Terreno implements IRenderable, IIlluminable{
             norms[i*3 + 1] = newNormal.y;
             norms[i*3 + 2] = newNormal.z;
         }
-        Log.d("simcity","passou?");
+
         superficie = new Object3D(coords,norms,uvs,indexes, TextureManager.TEXTURE_NOTFOUND);
         long t1 = System.currentTimeMillis();
-        Log.d("TEMPO_PASSAGEM_GEO", (t1-t0)+" ms");
+
         tt = tt + (t1-t0);
         t0 = System.currentTimeMillis();
         superficie.setCulling(true);
@@ -360,9 +360,9 @@ public class Terreno implements IRenderable, IIlluminable{
         superficie.strip();
         superficie.touch();
         t1 = System.currentTimeMillis();
-        Log.d("TEMPO_BUILD_DA_API", (t1-t0)+" ms");//
+
         tt = tt + (t1-t0);
-        Log.d("TEMPO_TOTAL",(t1-t0)+" ms");
+
         //Construção do shader
         //Setagem do shader na superficie.
         String vertexShaderSrc = Loader.loadTextFile(mundo.getContext().getResources().openRawResource(R.raw.teste_vertex_shader));

@@ -7,6 +7,7 @@ import android.opengl.GLSurfaceView;
 import android.util.DebugUtils;
 import android.util.Log;
 
+
 import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.Light;
 import com.threed.jpct.RGBColor;
@@ -71,8 +72,7 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 gl10, int w, int h) {
         //Atualização/criação do framebuffer
         if(lastGl!=gl10){//Cria o framebuffer
-            Log.i("Hello world", "init buffer");
-            if(fb!=null){
+            Log.i("Hello world", "init buffer");            if(fb!=null){
                 fb.dispose();
             }
             fb = new FrameBuffer(w, h);//Cria o framebuffer
@@ -126,23 +126,27 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     }
     private int fps = 0;
     private long time = System.currentTimeMillis();
+
     float xR = 0;
     @Override
     public void onDrawFrame(GL10 gl10) {
         // Draw the main screen
         fb.clear(RGBColor.GREEN);
         cameraHelper.update();
-        long t = System.currentTimeMillis();
-        mundo.avancarTempo(t - time);//Avança o tempo;
         mundo.render(fb);
         fb.display();
-
-        if (System.currentTimeMillis() - time >= 1000) {
+        long currTime = System.currentTimeMillis();
+        long dt = currTime - time;
+        if (dt >= 1000) {
             Log.d("SimCity_FPS", ""+fps);
             fps = 0;
             time = System.currentTimeMillis();
         }
+        if(dt % 20 == 0){
+            mundo.avancarTempo();
+        }
         fps++;
+        Log.d("SIMCITY_FRAMERATE", String.format("Time: %d, dt: %d, fps: %d", time, dt, fps));
     }
 
     public void incrementCameraZ() {
