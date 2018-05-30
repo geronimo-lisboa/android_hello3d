@@ -383,5 +383,7 @@ public class Terreno implements IRenderable, IIlluminable{
     @Override
     public void setSun(Sol s) {
         this.shader.setUniform("testLightPos", s.getPosicao());
+        this.shader.setUniform("testLightTint", s.getTint());
+        this.shader.setUniform("isNight", s.isNight()?1:0);
     }
 }

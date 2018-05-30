@@ -9,7 +9,6 @@ import com.threed.jpct.SimpleVector;
 
 public class Sol implements IUpdatable {
     private Mundo mundo;
-    private long currentTime = 0;
     private long minutes = 0;
 
     //Baixo nivel
@@ -28,19 +27,21 @@ public class Sol implements IUpdatable {
         double angleInDegs = minutes / 4;
         float r = (float) (Math.pow(Math.E, Math.sin(Math.toRadians(angleInDegs)))-1); //   Math.sin(Math.toRadians(angleInDegs));
         float g = (float) Math.sin(Math.toRadians(angleInDegs));//Math.sin(Math.toRadians(angleInDegs));
-        float b = (float) (Math.sin(Math.toRadians(angleInDegs))/5); //0;
+        float b = (float) (Math.sin(Math.toRadians(angleInDegs))); //0;
 
-        if(190 <angleInDegs && angleInDegs <350)
-        {
-            r = 0.05f;
-            g = 0.0f;
-            b = 0.12f;
-        }
         lightSource.setIntensity(r,g,b);
     }
 
     public SimpleVector getPosicao(){
         return lightSource.getPosition();
+    }
+    public SimpleVector getTint(){return lightSource.getIntensity();}
+    public boolean isNight(){
+        double angleInDegs = minutes / 4;
+        if(190 < angleInDegs && angleInDegs < 350)
+            return true;
+        else
+            return false;
     }
 
     public Sol(int horaAtual, Mundo m){

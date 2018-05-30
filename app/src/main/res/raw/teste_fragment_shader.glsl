@@ -1,5 +1,7 @@
 precision mediump float;
 uniform vec3 testLightPos;
+uniform int isNight;
+uniform vec3 testLightTint;
 uniform mat4 modelMatrix;
 uniform vec3 lightPositions[8];
 uniform vec3 cameraPosition;
@@ -56,6 +58,9 @@ void main() {
     vec3 color = evalShadingByInclination(worldNormal);
     color = evalShadingByHeight(vPosition, color, worldNormal);
     //Aplica a iluminação.
-    color = color * brightness;
+    if(isNight == 0)
+        color = color * brightness * testLightTint;
+    else //O jogo está de noite mas eu quero enxergar alguma coisa
+        color = color *(-brightness)* vec3(0.05, 0.0, 0.15);
     gl_FragColor = vec4(color,1);
 }
